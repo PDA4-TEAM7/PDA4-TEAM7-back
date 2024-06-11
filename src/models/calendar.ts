@@ -1,6 +1,6 @@
 import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey } from 'sequelize-typescript';
 
-export interface calenderAttributes {
+export interface calendarAttributes {
     calendar_id?: number;
     timeFrame?: string;
     dataFrame?: string;
@@ -16,8 +16,8 @@ export interface calenderAttributes {
     dollarIndex?: string;
 }
 
-@Table({ tableName: 'calender', timestamps: true })
-export class Calender extends Model<calenderAttributes, calenderAttributes> implements calenderAttributes {
+@Table({ tableName: 'calendar', timestamps: true })
+export class Calendar extends Model<calendarAttributes, calendarAttributes> implements calendarAttributes {
     @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
     calendar_id?: number;

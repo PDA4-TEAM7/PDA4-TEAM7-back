@@ -3,7 +3,7 @@ import sequelize from '../config/db.config';
 
 import { User } from './user';
 import { Account } from './account';
-import { Calender } from './calender';
+import { Calendar } from './calendar';
 import { Comment } from './comment';
 import { Market } from './market';
 import { Portfolio } from './portfolio';
@@ -30,7 +30,7 @@ db.Sequelize = Sequelize;
 sequelize.addModels([
     User,
     Account,
-    Calender,
+    Calendar,
     Comment,
     Market,
     Stock,
