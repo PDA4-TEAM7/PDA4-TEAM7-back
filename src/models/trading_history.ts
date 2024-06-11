@@ -1,35 +1,51 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey } from 'sequelize-typescript';
+import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Account } from './account';
+import { Stock } from './stock';
 
 export interface trading_historyAttributes {
     trading_id?: number;
     account_id?: number;
     stock_id?: number;
-    sls_buy_divsn?: number;
-    trade_dt?: string;
-    tot_ccl_qty?: number;
-    tot_ccl_amt?: number;
+    sll_buy_dvsn_cd?: number;
+    trade_dt?: Date;
+    tot_ccld_qty?: number;
+    tot_ccld_amt?: number;
 }
 
-@Table({ tableName: 'trading_history', timestamps: false })
-export class trading_history
+@Table({ tableName: 'trading_history', timestamps: true })
+export class Trading_history
     extends Model<trading_historyAttributes, trading_historyAttributes>
     implements trading_historyAttributes
 {
     @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
     trading_id?: number;
+
+    @ForeignKey(() => Account)
     @Column({ allowNull: true, type: DataType.BIGINT })
     @Index({ name: 'account_id', using: 'BTREE', order: 'ASC', unique: false })
     account_id?: number;
+
+    @ForeignKey(() => Stock)
     @Column({ allowNull: true, type: DataType.BIGINT })
     @Index({ name: 'stock_id', using: 'BTREE', order: 'ASC', unique: false })
     stock_id?: number;
+
     @Column({ allowNull: true, type: DataType.INTEGER })
-    sls_buy_divsn?: number;
-    @Column({ allowNull: true, type: DataType.DATEONLY })
-    trade_dt?: string;
+    sll_buy_dvsn_cd?: number;
+
+    @Column({ allowNull: true, type: DataType.DATE })
+    trade_dt?: Date;
+
     @Column({ allowNull: true, type: DataType.INTEGER })
-    tot_ccl_qty?: number;
+    tot_ccld_qty?: number;
+
     @Column({ allowNull: true, type: DataType.INTEGER })
-    tot_ccl_amt?: number;
+    tot_ccld_amt?: number;
+
+    @BelongsTo(() => Account)
+    account!: Account;
+
+    @BelongsTo(() => Stock)
+    stock!: Stock;
 }
