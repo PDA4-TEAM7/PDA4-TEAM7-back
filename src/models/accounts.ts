@@ -45,7 +45,6 @@ export class Account extends Model {
     })
     pchs_amt_smtl_amt!: number;
 
-
     //평가금액합계금액
     @Column({
         type: DataType.BIGINT,
