@@ -38,18 +38,22 @@ export class Account extends Model {
     })
     account_number!: string;
 
+    //매입금액합계금액 - 총구매한 금액
     @Column({
         type: DataType.BIGINT,
         allowNull: true,
     })
     pchs_amt_smtl_amt!: number;
 
+
+    //평가금액합계금액
     @Column({
         type: DataType.BIGINT,
         allowNull: true,
     })
     evlu_amt_smtl_amt!: number;
 
+    //평가손익합계금액
     @Column({
         type: DataType.BIGINT,
         allowNull: true,
