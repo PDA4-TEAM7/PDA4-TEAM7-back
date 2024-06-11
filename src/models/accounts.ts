@@ -1,8 +1,9 @@
-import { Model, Column, Table, DataType } from 'sequelize-typescript';
+import { Model, Column, Table, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { User } from './users';
 
 @Table({
     timestamps: true,
-    tableName: 'Accounts',
+    tableName: 'account',
 })
 export class Account extends Model {
     @Column({
@@ -12,9 +13,10 @@ export class Account extends Model {
     })
     account_id!: number;
 
+    @ForeignKey(() => User)
     @Column({
         type: DataType.BIGINT,
-        autoIncrement: true,
+        allowNull: false,
     })
     uid!: number;
 
@@ -28,7 +30,7 @@ export class Account extends Model {
         type: DataType.STRING(255),
         allowNull: true,
     })
-    secret_key!: string;
+    app_secret!: string;
 
     @Column({
         type: DataType.STRING,
@@ -53,4 +55,7 @@ export class Account extends Model {
         allowNull: true,
     })
     evlu_pfls_smtl_amt!: number;
+
+    @BelongsTo(() => User)
+    user!: User;
 }
