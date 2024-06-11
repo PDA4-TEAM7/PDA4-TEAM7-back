@@ -1,24 +1,37 @@
 // models/users.ts
 
-import { Model, Column, Table, DataType } from 'sequelize-typescript';
+import { Model, Column, Table, DataType, HasMany } from 'sequelize-typescript';
+import { Account } from './accounts';
 
 @Table({
     timestamps: true,
-    tableName: 'Users',
+    tableName: 'user',
 })
 export class User extends Model {
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.BIGINT,
         primaryKey: true,
         autoIncrement: true,
     })
-    id!: number;
+    uid!: number;
 
     @Column({
         type: DataType.STRING(255),
         allowNull: false,
     })
-    username!: string;
+    user_id!: string;
+
+    @Column({
+        type: DataType.STRING(255),
+        allowNull: false,
+    })
+    userName!: string;
+
+    @Column({
+        type: DataType.STRING(255),
+        allowNull: false,
+    })
+    auth_token!: string;
 
     @Column({
         type: DataType.STRING(255),
@@ -27,8 +40,11 @@ export class User extends Model {
     password!: string;
 
     @Column({
-        type: DataType.STRING(255),
+        type: DataType.BIGINT,
         allowNull: true,
     })
-    email?: string;
+    credit!: number;
+
+    @HasMany(() => Account)
+    account!: Account[];
 }

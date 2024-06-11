@@ -3,6 +3,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import sequelize from '../config/db.config';
 import { User } from './users';
+import { Account } from './accounts';
 
 export interface DB {
     sequelize: Sequelize;
@@ -18,7 +19,17 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 // 모든 모델을 여기서 등록
-sequelize.addModels([User]);
+sequelize.addModels([User,Account]);
+
+User.hasMany(Account, {
+    foreignKey: 'uid',
+    sourceKey: 'uid',
+  });
+  
+Account.belongsTo(User, {
+    foreignKey: 'uid',
+    targetKey: 'uid',
+  });
 
 export const initializeDatabase = async () => {
     try {
