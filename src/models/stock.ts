@@ -14,7 +14,7 @@ import {
 import { Market } from "./market";
 import { Stock_in_account } from "./stock_in_account";
 import { Trading_history } from "./trading_history";
-import { Stock_current } from "./stock_current";
+import { Stock_history } from "./stock_current";
 
 export interface stockAttributes {
   stock_id?: number;
@@ -65,6 +65,6 @@ export class Stock
   trading_history!: Trading_history;
 
   //   주식 현재가와 일 대 일(오직 하나) 관계
-  @HasOne(() => Stock_current)
-  stock_current!: Stock_current;
+  @HasMany(() => Stock_history)
+  stock_history!: Stock_history;
 }

@@ -13,20 +13,19 @@ import {
 } from "sequelize-typescript";
 import { Stock } from "./stock";
 import { Market } from "./market";
-// import { Stock_in_account } from "./stock_in_account";
-// import { Trading_history } from "./trading_history";
 
-export interface stockCurrentAttributes {
+export interface stockHistoryAttributes {
   stock_id?: number;
   market_id?: number;
   now_price?: number;
   closing_price?: number;
+  update_dt?: Date;
 }
 
 @Table({ tableName: "stock_current", timestamps: true })
-export class Stock_current
-  extends Model<stockCurrentAttributes, stockCurrentAttributes>
-  implements stockCurrentAttributes
+export class Stock_history
+  extends Model<stockHistoryAttributes, stockHistoryAttributes>
+  implements stockHistoryAttributes
 {
   @ForeignKey(() => Stock)
   @Column({ allowNull: true, type: DataType.BIGINT })
@@ -43,6 +42,9 @@ export class Stock_current
 
   @Column({ allowNull: true, type: DataType.BIGINT })
   closing_price?: number;
+
+  @Column({ allowNull: true, type: DataType.BIGINT })
+  update_dt?: Date;
 
   @BelongsTo(() => Stock)
   market!: Stock;
