@@ -1,6 +1,7 @@
 import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Account } from './account';
 import { Sub_portfolio } from './sub_portfolio';
+import { Comment } from './comment';
 
 export interface portfolioAttributes {
     portfolio_id?: number;
@@ -11,6 +12,7 @@ export interface portfolioAttributes {
     create_dt?: Date;
     title?: string;
     description?: string;
+    detail_description?: string;
 }
 
 @Table({ tableName: 'portfolio', timestamps: true })
@@ -42,9 +44,15 @@ export class Portfolio extends Model<portfolioAttributes, portfolioAttributes> i
     @Column({ allowNull: true, type: DataType.STRING(255) })
     description?: string;
 
+    @Column({ allowNull: true, type: DataType.STRING(255) })
+    detail_description?: string;
+
     @BelongsTo(() => Account)
     account!: Account;
 
     @HasMany(() => Sub_portfolio)
     sub_portfolio!: Sub_portfolio;
+
+    @HasMany(() => Comment)
+    comment!: Comment;
 }

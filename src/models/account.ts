@@ -1,4 +1,15 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
+import {
+    Model,
+    Table,
+    Column,
+    DataType,
+    Index,
+    Sequelize,
+    ForeignKey,
+    BelongsTo,
+    HasMany,
+    HasOne,
+} from 'sequelize-typescript';
 import { User } from './user';
 import { Stock_in_account } from './stock_in_account';
 import { Trading_history } from './trading_history';
@@ -9,9 +20,9 @@ export interface accountAttributes {
     app_key?: string;
     app_secret?: string;
     account_number?: string;
-    pchs_amt_sml_amt?: number;
+    pchs_amt_smtl_amt?: number;
     evlu_amt_smtl_amt?: number;
-    evlu_pfls_sml_amt?: number;
+    evlu_pfls_smtl_amt?: number;
 }
 
 @Table({ tableName: 'account', timestamps: false })
@@ -35,13 +46,16 @@ export class Account extends Model<accountAttributes, accountAttributes> impleme
     account_number?: string;
 
     @Column({ allowNull: true, type: DataType.BIGINT })
-    pchs_amt_sml_amt?: number;
+    // 매입금액합계금액
+    pchs_amt_smtl_amt?: number;
 
     @Column({ allowNull: true, type: DataType.BIGINT })
+    // 평가금액합계금액
     evlu_amt_smtl_amt?: number;
 
     @Column({ allowNull: true, type: DataType.BIGINT })
-    evlu_pfls_sml_amt?: number;
+    // 평가손익합계금액
+    evlu_pfls_smtl_amt?: number;
 
     @BelongsTo(() => User)
     user!: User;
@@ -52,6 +66,6 @@ export class Account extends Model<accountAttributes, accountAttributes> impleme
     @HasMany(() => Trading_history)
     trading_history!: Trading_history;
 
-    @HasMany(() => Portfolio)
+    @HasOne(() => Portfolio)
     portfolio!: Portfolio;
 }

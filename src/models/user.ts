@@ -1,6 +1,7 @@
 import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, AllowNull, HasMany } from 'sequelize-typescript';
 import { Account } from './account';
 import { Sub_portfolio } from './sub_portfolio';
+import { Comment } from './comment';
 export interface userAttributes {
     uid?: number;
     user_id?: string;
@@ -69,6 +70,7 @@ export class User extends Model<userAttributes, userAttributes> implements userA
 
     @HasMany(() => Sub_portfolio)
     sub_portfolio!: Sub_portfolio;
-    // @HasMany(() => Sub_portfolio)
-    // sub_portfolio!: Sub_portfolio[];
+
+    @HasMany(() => Comment)
+    comment!: Comment;
 }

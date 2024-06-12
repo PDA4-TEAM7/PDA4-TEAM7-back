@@ -1,12 +1,14 @@
 import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { Portfolio } from './portfolio';
 import { User } from './user';
+import { DATE } from 'sequelize';
 
 export interface sub_portfolioAttributes {
     portfolio_id?: number;
     uid?: number;
     st_dt?: Date;
     ed_dt?: Date;
+    can_sub?: boolean;
 }
 
 @Table({ tableName: 'sub_portfolio', timestamps: true })
@@ -29,6 +31,9 @@ export class Sub_portfolio
 
     @Column({ allowNull: false, type: DataType.DATE })
     ed_dt?: Date;
+
+    @Column({ allowNull: false, type: DataType.BOOLEAN })
+    can_sub?: boolean;
 
     @BelongsTo(() => Portfolio)
     portfolio!: Portfolio;

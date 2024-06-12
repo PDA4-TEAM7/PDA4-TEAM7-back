@@ -1,4 +1,5 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey } from 'sequelize-typescript';
+import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Comment } from './comment';
 
 export interface replyAttributes {
     reply_id?: number;
@@ -14,6 +15,7 @@ export class Reply extends Model<replyAttributes, replyAttributes> implements re
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
     reply_id?: number;
 
+    @ForeignKey(() => Comment)
     @Column({ allowNull: true, type: DataType.BIGINT })
     @Index({ name: 'comment_id', using: 'BTREE', order: 'ASC', unique: false })
     comment_id?: number;
@@ -27,4 +29,7 @@ export class Reply extends Model<replyAttributes, replyAttributes> implements re
 
     @Column({ allowNull: true, type: DataType.DATE })
     create_dt?: Date;
+
+    @BelongsTo(() => Comment)
+    comment!: Comment;
 }
