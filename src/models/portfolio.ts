@@ -22,7 +22,7 @@ export class Portfolio extends Model<portfolioAttributes, portfolioAttributes> i
     portfolio_id?: number;
 
     @ForeignKey(() => Account)
-    @Column({ allowNull: true, type: DataType.BIGINT })
+    @Column({ allowNull: false, type: DataType.BIGINT })
     @Index({ name: 'account_id', using: 'BTREE', order: 'ASC', unique: false })
     account_id?: number;
 
@@ -44,7 +44,7 @@ export class Portfolio extends Model<portfolioAttributes, portfolioAttributes> i
     @Column({ allowNull: true, type: DataType.STRING(255) })
     description?: string;
 
-    @Column({ allowNull: true, type: DataType.STRING(255) })
+    @Column({ allowNull: true, type: DataType.STRING(1023) })
     detail_description?: string;
 
     @BelongsTo(() => Account)
