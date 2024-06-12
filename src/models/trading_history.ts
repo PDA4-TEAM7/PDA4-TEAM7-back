@@ -6,7 +6,7 @@ export interface trading_historyAttributes {
     trading_id?: number;
     account_id?: number;
     stock_id?: number;
-    sll_buy_dvsn_cd?: number;
+    sll_buy_dvsn_cd?: string;
     trade_dt?: Date;
     tot_ccld_qty?: number;
     tot_ccld_amt?: number;
@@ -31,8 +31,8 @@ export class Trading_history
     @Index({ name: 'stock_id', using: 'BTREE', order: 'ASC', unique: false })
     stock_id?: number;
 
-    @Column({ allowNull: true, type: DataType.INTEGER })
-    sll_buy_dvsn_cd?: number;
+    @Column({ allowNull: true, type: DataType.STRING })
+    sll_buy_dvsn_cd?: string;
 
     @Column({ allowNull: true, type: DataType.DATE })
     trade_dt?: Date;
