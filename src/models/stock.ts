@@ -14,7 +14,7 @@ import {
 import { Market } from "./market";
 import { Stock_in_account } from "./stock_in_account";
 import { Trading_history } from "./trading_history";
-import { Stock_history } from "./stock_current";
+import { Stock_history } from "./stock_history";
 
 export interface stockAttributes {
   stock_id?: number;
