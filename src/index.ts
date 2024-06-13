@@ -4,6 +4,11 @@ import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
 import { stockAccountApi } from "./services/stockAccountAPI";
 
+//router
+const CommentRouter = require("./routes/api/comment");
+
+
+
 const app = express();
 
 // 기본 미들웨어
@@ -11,10 +16,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+
+
+
+
 // 루트 라우트
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
+
+//app.use("/comment",CommentRouter);
+
 app.get("/me", async (req: Request, res: Response) => {
   try {
     const hantuService = new stockAccountApi();

@@ -6,7 +6,7 @@ export interface marketAttributes {
     country?: string;
 }
 
-@Table({ tableName: 'market', timestamps: true })
+@Table({ tableName: 'market', timestamps: false })
 export class Market extends Model<marketAttributes, marketAttributes> implements marketAttributes {
     @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })

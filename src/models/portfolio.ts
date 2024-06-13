@@ -15,7 +15,7 @@ export interface portfolioAttributes {
     detail_description?: string;
 }
 
-@Table({ tableName: 'portfolio', timestamps: true })
+@Table({ tableName: 'portfolio', timestamps: false })
 export class Portfolio extends Model<portfolioAttributes, portfolioAttributes> implements portfolioAttributes {
     @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })

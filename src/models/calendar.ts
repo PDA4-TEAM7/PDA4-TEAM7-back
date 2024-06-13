@@ -16,7 +16,7 @@ export interface calendarAttributes {
     dollarIndex?: string;
 }
 
-@Table({ tableName: 'calendar', timestamps: true })
+@Table({ tableName: 'calendar', timestamps: false })
 export class Calendar extends Model<calendarAttributes, calendarAttributes> implements calendarAttributes {
     @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
