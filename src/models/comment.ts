@@ -12,7 +12,7 @@ export interface commentAttributes {
     create_dt?: Date;
 }
 
-@Table({ tableName: 'comment', timestamps: true })
+@Table({ tableName: 'comment', timestamps: false })
 export class Comment extends Model<commentAttributes, commentAttributes> implements commentAttributes {
     @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
     @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })

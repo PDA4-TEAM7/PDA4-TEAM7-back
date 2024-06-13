@@ -3,7 +3,7 @@ import cors from "cors";
 import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
 import { stockAccountApi } from "./services/stockAccountAPI";
-
+import router from "./routes/index";
 const app = express();
 
 // 기본 미들웨어
@@ -15,6 +15,10 @@ app.use(cors());
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
+
+app.use("/api", router());
+
+//DUMMY : 한투 테스트용 api 나중에 지울예정
 app.get("/me", async (req: Request, res: Response) => {
   try {
     const hantuService = new stockAccountApi();

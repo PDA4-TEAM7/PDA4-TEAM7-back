@@ -22,7 +22,7 @@ export interface stockHistoryAttributes {
   update_dt?: Date;
 }
 
-@Table({ tableName: "stock_history", timestamps: true })
+@Table({ tableName: "stock_history", timestamps: false })
 export class Stock_history
   extends Model<stockHistoryAttributes, stockHistoryAttributes>
   implements stockHistoryAttributes

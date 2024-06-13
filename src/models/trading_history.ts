@@ -12,7 +12,7 @@ export interface trading_historyAttributes {
     tot_ccld_amt?: number;
 }
 
-@Table({ tableName: 'trading_history', timestamps: true })
+@Table({ tableName: 'trading_history', timestamps: false })
 export class Trading_history
     extends Model<trading_historyAttributes, trading_historyAttributes>
     implements trading_historyAttributes

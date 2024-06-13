@@ -12,7 +12,7 @@ export interface userAttributes {
     join?: Date;
 }
 
-@Table({ tableName: 'user', timestamps: true })
+@Table({ tableName: 'user', timestamps: false })
 export class User extends Model<userAttributes, userAttributes> implements userAttributes {
     @Column({
         primaryKey: true,

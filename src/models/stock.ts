@@ -26,7 +26,7 @@ export interface stockAttributes {
   listing?: boolean;
 }
 
-@Table({ tableName: "stock", timestamps: true })
+@Table({ tableName: "stock", timestamps: false })
 export class Stock
   extends Model<stockAttributes, stockAttributes>
   implements stockAttributes
