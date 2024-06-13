@@ -1,13 +1,11 @@
 import express from "express";
-// import account from "./account";
-//router
-// import CommentRouter from "./routes/api/comment";
+import account from "./account";
 import comment from "./comment";
 
 const router = express.Router();
 
 export default (): express.Router => {
-  // account(router);
+  account(router);
   comment(router);
   return router;
 };
