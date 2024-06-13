@@ -5,7 +5,7 @@ import { initializeDatabase } from "./models/index";
 import { stockAccountApi } from "./services/stockAccountAPI";
 
 //router
-const CommentRouter = require("./routes/api/comment");
+import CommentRouter from "./routes/api/comment";
 
 
 
@@ -25,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
-//app.use("/comment",CommentRouter);
+app.use("/comment",CommentRouter);
 
 app.get("/me", async (req: Request, res: Response) => {
   try {
