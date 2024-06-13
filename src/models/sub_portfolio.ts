@@ -11,7 +11,7 @@ export interface sub_portfolioAttributes {
     can_sub?: boolean;
 }
 
-@Table({ tableName: 'sub_portfolio', timestamps: true })
+@Table({ tableName: 'sub_portfolio', timestamps: false })
 export class Sub_portfolio
     extends Model<sub_portfolioAttributes, sub_portfolioAttributes>
     implements sub_portfolioAttributes
