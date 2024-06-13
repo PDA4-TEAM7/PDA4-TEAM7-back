@@ -2,14 +2,30 @@ import { Sequelize } from 'sequelize-typescript';
 import { type Dialect } from 'sequelize';
 import * as dotenv from 'dotenv';
 dotenv.config();
+const port = parseInt(process.env.DB_PORT || '3306');
+console.log('Database Port:', process.env.DB_PORT);
 
 const sequelize = new Sequelize({
     database: process.env.DB_DBNAME as string,
     username: process.env.DB_USERNAME as string,
     password: process.env.DB_PASSWORD as string,
     host: process.env.DB_HOST as string,
-    // port: process.env.DB_PORT as string,
+    port: port,
     dialect: process.env.DB_DIALECT as Dialect,
 });
+
+// new Sequelize(
+//   process.env.DB_DBNAME as string,
+//   process.env.DB_USERNAME as string,
+//   process.env.DB_PASSWORD as string,
+//   {
+//       dialect: 'mysql',
+//       dialectOptions: {
+//           // Your mysql2 options here
+//           host: process.env.DB_HOST as string,
+//           port: process.env.DB_PORT as string,
+//       },
+//   }
+// );
 
 export default sequelize;

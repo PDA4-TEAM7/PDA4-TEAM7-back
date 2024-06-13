@@ -18,7 +18,7 @@ export interface accountAttributes {
   account_id?: number;
   uid?: number;
   app_key?: string;
-  app_secret?: string;
+  app_secret_key?: string;
   account_number?: string;
   pchs_amt_smtl_amt?: number;
   evlu_amt_smtl_amt?: number;

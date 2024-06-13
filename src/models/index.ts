@@ -12,6 +12,7 @@ import { Stock_in_account } from './stock_in_account';
 import { Stock } from './stock';
 import { Sub_portfolio } from './sub_portfolio';
 import { Trading_history } from './trading_history';
+import { Stock_history } from './stock_history';
 
 export interface DB {
     sequelize: Sequelize;
@@ -39,13 +40,14 @@ sequelize.addModels([
     Reply,
     Sub_portfolio,
     Trading_history,
+    Stock_history,
 ]);
 
 export const initializeDatabase = async () => {
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
-        await sequelize.sync({ force: true }); // 데이터베이스와 모델 동기화
+        await sequelize.sync({ force: false }); // 데이터베이스와 모델 동기화
         console.log('Database synchronized successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);

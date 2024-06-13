@@ -12,6 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // 루트 라우트
+app.get("/", (req: Request, res: Response) => {
+  res.send("Welcome to the API");
+});
+
 app.use("/api", router());
 
 //DUMMY : 한투 테스트용 api 나중에 지울예정

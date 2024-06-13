@@ -1,3 +1,3 @@
-// // 서버 시작
+// 서버 시작
 import { startServer } from "./index";
 startServer();
