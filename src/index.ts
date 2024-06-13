@@ -25,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
 
-app.use("/comment",CommentRouter);
+app.use("/api/comment",CommentRouter);
 
 app.get("/me", async (req: Request, res: Response) => {
   try {
