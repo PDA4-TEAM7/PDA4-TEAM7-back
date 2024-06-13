@@ -34,3 +34,56 @@ export const writeComment = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+// Comment 읽기 API
+export const readComment = async (req: Request, res: Response) =>{
+      const { portfolio_id } = req.params;
+
+      try {
+        const portfolio = await Portfolio.findByPk(portfolio_id);
+        if (!portfolio) {
+          return res.status(404).json({ message: "Portfolio not found" });
+        }
+
+        const comments = await Comment.findAll({
+          where: { portfolio_id },
+          include: [
+            {
+              model: User,
+              attributes: ["username"], // 가져올 사용자 정보
+            },
+          ],
+          attributes: ["description", "create_dt"], // 가져올 댓글 정보
+        });
+
+        const formattedComments = comments.map((comment) => ({
+          author: comment.user.username,
+          description: comment.description,
+          create_dt: comment.create_dt,
+        }));
+
+        res.status(200).json({ comments: formattedComments });
+      } catch (error) {
+        console.error("Error reading comments:", error);
+        res.status(500).json({ message: "Server error", error });
+      }
+    };
+
+
+// Comment 삭제 API
+export const deleteComment =  async (req: Request, res: Response) => {
+  const { comment_id } = req.params;
+
+  try {
+    const comment = await Comment.findByPk(comment_id);
+    if (!comment) {
+      return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
+    }
+
+    await comment.destroy();
+    res.status(200).json({ message: "댓글이 삭제되었습니다." });
+  } catch (error) {
+    console.error("에러발생:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
