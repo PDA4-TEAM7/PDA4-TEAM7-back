@@ -24,6 +24,7 @@ export interface stockAttributes {
   listing_dt?: Date;
   delisting_dt?: Date;
   listing?: boolean;
+  std_idst_clsf_cd_name?: string;
 }
 
 @Table({ tableName: "stock", timestamps: false })
@@ -54,6 +55,9 @@ export class Stock
 
   @Column({ allowNull: true, type: DataType.BOOLEAN })
   listing?: boolean;
+
+  @Column({ allowNull: false, type: DataType.STRING })
+  std_idst_clsf_cd_name?: string;
 
   @BelongsTo(() => Market)
   market!: Market;
