@@ -43,8 +43,8 @@ sequelize.addModels([
 
 export const initializeDatabase = async () => {
     try {
-        await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
+        // await sequelize.authenticate();
+        // console.log('Connection has been established successfully.');
         await sequelize.sync({ force: true }); // 데이터베이스와 모델 동기화
         console.log('Database synchronized successfully.');
     } catch (error) {
