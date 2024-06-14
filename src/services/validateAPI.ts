@@ -5,7 +5,6 @@ class validateAPI {
   static async checkUserIdAvailability(user_id: string): Promise<boolean> {
     console.log("checkIn", user_id);
     if (!user_id || user_id.trim() === "") {
-      console.log("요기?");
       return false;
     }
     const user = await User.findOne({
