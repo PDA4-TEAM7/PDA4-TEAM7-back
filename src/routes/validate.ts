@@ -1,8 +1,6 @@
 import express from 'express';
-import validateController from '../controllers/validateController';
+import { checkUserIdAvailability } from '../controllers/validate';
 
-const router = express.Router();
-
-router.post('/check-userid', validateController.checkUserIdAvailability);
-
-export default router;
+export default (router: express.Router) => {
+    router.post('/validate/check-userid', checkUserIdAvailability);
+};
