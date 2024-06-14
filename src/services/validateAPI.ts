@@ -8,6 +8,13 @@ class validateAPI {
         });
         return !user;
     }
+
+    static async checkUsernameAvailability(username: string): Promise<boolean> {
+        const user = await User.findOne({
+            where: { username: username },
+        });
+        return !user;
+    }
 }
 
 export default validateAPI;
