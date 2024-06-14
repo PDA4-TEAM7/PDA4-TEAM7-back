@@ -1,3 +1,4 @@
+
 import express from 'express';
 import account from './account';
 import comment from './comment';
@@ -11,5 +12,6 @@ export default (): express.Router => {
     validate(router);
     auth(router);
     return router;
+
 };
 ////하나로 묶어준뒤 경로에 따라서 요청이 나감.
