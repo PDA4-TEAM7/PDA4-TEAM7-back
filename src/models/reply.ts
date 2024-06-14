@@ -1,4 +1,4 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo,Default } from 'sequelize-typescript';
 import { Comment } from './comment';
 
 export interface replyAttributes {
@@ -7,6 +7,8 @@ export interface replyAttributes {
     user_id?: number;
     description?: string;
     create_dt?: Date;
+    update_dt?:Date;
+    is_update?:Boolean;
 }
 
 @Table({ tableName: 'reply', timestamps: false })
@@ -29,6 +31,13 @@ export class Reply extends Model<replyAttributes, replyAttributes> implements re
 
     @Column({ allowNull: true, type: DataType.DATE })
     create_dt?: Date;
+
+    @Column({allowNull: true, type: DataType.DATE})
+    update_dt?: Date;
+
+    @Default(false)
+    @Column({allowNull: true, type: DataType.BOOLEAN})
+    is_update?: Boolean;
 
     @BelongsTo(() => Comment)
     comment!: Comment;
