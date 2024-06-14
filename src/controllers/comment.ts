@@ -16,7 +16,9 @@ export const writeComment = async (req: Request, res: Response) => {
     const portfolio = await Portfolio.findByPk(dummyPortfolioId);
 
     if (!user || !portfolio) {
-      return res.status(404).json({ message: "해당 포트폴리오나 유저가 없습니다." });
+      return res
+        .status(404)
+        .json({ message: "해당 포트폴리오나 유저가 없습니다." });
     }
 
     const newComment = await Comment.create({
@@ -34,42 +36,42 @@ export const writeComment = async (req: Request, res: Response) => {
 };
 
 // Comment 읽기 API
-export const readComment = async (req: Request, res: Response) =>{
-      const { portfolio_id } = req.params;
+export const readComment = async (req: Request, res: Response) => {
+  const { portfolio_id } = req.params;
 
-      try {
-        const portfolio = await Portfolio.findByPk(portfolio_id);
-        if (!portfolio) {
-          return res.status(404).json({ message: "Portfolio not found" });
-        }
+  try {
+    const portfolio = await Portfolio.findByPk(portfolio_id);
+    if (!portfolio) {
+      return res.status(404).json({ message: "Portfolio not found" });
+    }
 
-        const comments = await Comment.findAll({
-          where: { portfolio_id },
-          include: [
-            {
-              model: User,
-              attributes: ["username"], // 가져올 사용자 정보
-            },
-          ],
-          attributes: ["description", "create_dt"], // 가져올 댓글 정보
-        });
+    const comments = await Comment.findAll({
+      where: { portfolio_id },
+      include: [
+        {
+          model: User,
+          attributes: ["username", "uid"], // 가져올 사용자 정보
+        },
+      ],
+      attributes: ["description", "create_dt", "user_id"], // 가져올 댓글 정보
+    });
 
-        const formattedComments = comments.map((comment) => ({
-          author: comment.user.username,
-          description: comment.description,
-          create_dt: comment.create_dt,
-        }));
+    const formattedComments = comments.map((comment) => ({
+      author: comment.user.username,
+      user_id: comment.user.uid,
+      description: comment.description,
+      create_dt: comment.create_dt,
+    }));
 
-        res.status(200).json({ comments: formattedComments });
-      } catch (error) {
-        console.error("Error reading comments:", error);
-        res.status(500).json({ message: "Server error", error });
-      }
-    };
-
+    res.status(200).json({ comments: formattedComments });
+  } catch (error) {
+    console.error("Error reading comments:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
 
 // Comment 삭제 API
-export const deleteComment =  async (req: Request, res: Response) => {
+export const deleteComment = async (req: Request, res: Response) => {
   const { comment_id } = req.params;
 
   try {
