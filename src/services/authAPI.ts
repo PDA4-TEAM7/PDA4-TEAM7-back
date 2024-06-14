@@ -12,7 +12,7 @@ interface UserSignUpResponse {
 class AuthAPI {
   static async signUp(auth: IAuth): Promise<UserSignUpResponse> {
     if (auth.password !== auth.confirm_password) {
-      throw new Error("비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+      throw new Error("동일한 비밀번호를 입력해주세요");
     }
     try {
       const newUser = await User.create(auth);
