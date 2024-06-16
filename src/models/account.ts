@@ -20,16 +20,15 @@ export interface accountAttributes {
   app_key?: string;
   app_secret_key?: string;
   account_number?: string;
+  access_token?: string;
+  access_token_valid_dt?: Date;
   pchs_amt_smtl_amt?: number;
   evlu_amt_smtl_amt?: number;
   evlu_pfls_smtl_amt?: number;
 }
 
 @Table({ tableName: "account", timestamps: false })
-export class Account
-  extends Model<accountAttributes, accountAttributes>
-  implements accountAttributes
-{
+export class Account extends Model<accountAttributes, accountAttributes> implements accountAttributes {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
   @Index({ name: "PRIMARY", using: "BTREE", order: "ASC", unique: true })
   account_id?: number;
@@ -45,7 +44,7 @@ export class Account
   @Column({ allowNull: true, type: DataType.STRING(255) })
   app_secret?: string;
 
-  @Column({ allowNull: true, type: DataType.STRING(255) })
+  @Column({ allowNull: true, type: DataType.TEXT })
   access_token?: string;
 
   @Column({ allowNull: true, type: DataType.DATE })

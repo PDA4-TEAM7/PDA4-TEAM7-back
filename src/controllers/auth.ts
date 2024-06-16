@@ -27,6 +27,7 @@ export const signUp = async (req: Request, res: Response) => {
       { expiresIn: "1h" } // 유효 시간 설정
     );
 
+
     res.cookie("token", token, {
       httpOnly: true, // 쿠키를 HTTP(S) 통신에서만 사용
       // secure: process.env.NODE_ENV === "production", // 프로덕션 환경에서는 HTTPS 통신만 허용
@@ -68,8 +69,10 @@ export const signIn = async (req: Request, res: Response) => {
   }
 };
 
+
 export const signOut = (req: Request, res: Response) => {
   const { cookieOptions } = authAPI.clearAuthentication();
   res.cookie("token", "", cookieOptions);
   return res.status(200).json({ message: "로그아웃 성공!" });
 };
+
