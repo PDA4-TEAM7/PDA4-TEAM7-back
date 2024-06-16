@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 import { Account } from "../models/account";
 
 export const writeReply = async (req: Request, res: Response) => {
-  const { description, comment_id, userId } = req.body; // 요청 본문에서 description을 가져옵니다.
+  const { description, comment_id, userId } = req.body;
 
   try {
     const comment = await Comment.findByPk(comment_id);
@@ -34,7 +34,7 @@ export const writeReply = async (req: Request, res: Response) => {
 
     const newReply = await Reply.create({
       comment_id,
-      user_id: userId, // userId는 포트폴리오 작성자의 ID로 설정됩니다.
+      user_id: userId, // 포트폴리오 작성자의 ID
       description,
       create_dt: new Date(),
     });
