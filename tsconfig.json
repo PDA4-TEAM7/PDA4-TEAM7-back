@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-        "typeRoots": ["./node_modules/@types", "./@types"],
-        "target": "ES6",
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "strict": true,
-        "sourceMap": true,
-        "allowJs": true,
-        "checkJs": true,
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
-    },
-    "include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts"]
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./@types"],
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts"]
 }

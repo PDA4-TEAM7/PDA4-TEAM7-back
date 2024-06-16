@@ -7,6 +7,7 @@ import stock_account from "./stock_account";
 import stockhistory from "./stockhistory";
 import reply from "./reply";
 import auth from "./auth";
+
 const router = express.Router();
 
 export default (): express.Router => {
