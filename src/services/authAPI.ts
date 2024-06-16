@@ -1,4 +1,5 @@
 import { User } from "../models/user";
+import bcrypt from "bcrypt";
 export interface IAuth {
   user_id: string;
   username: string;
@@ -9,6 +10,12 @@ interface UserSignUpResponse {
   user_id: string;
   username: string;
 }
+
+interface UserSignInResponse {
+  user_id: string;
+  username: string;
+}
+
 class AuthAPI {
   static async signUp(auth: IAuth): Promise<UserSignUpResponse> {
     if (auth.password !== auth.confirm_password) {
@@ -28,6 +35,24 @@ class AuthAPI {
     } catch (error) {
       throw new Error("회원가입 처리 중 오류가 발생했습니다.");
     }
+  }
+
+  static async signIn(user_id: string, password: string): Promise<UserSignInResponse> {
+    const user = await User.findOne({ where: { user_id: user_id } });
+
+    if (!user || !user.password || !user.user_id || !user.username) {
+      throw new Error("User not found");
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      throw new Error("Invalid password");
+    }
+
+    return {
+      user_id: user.user_id,
+      username: user.username,
+    };
   }
 }
 
