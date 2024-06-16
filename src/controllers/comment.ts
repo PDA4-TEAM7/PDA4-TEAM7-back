@@ -4,16 +4,11 @@ import { User } from "../models/user";
 import { Request, Response } from "express";
 
 export const writeComment = async (req: Request, res: Response) => {
-  const { description, dummyUserId, dummyPortfolioId } = req.body;
-
-  // 더미 값
-  // const dummyUserId = 1;
-  // const dummyPortfolioId = 2;
+  const { description, userId, portfolioId } = req.body;
 
   try {
-    // 더미 포트폴리오와 유저가 실제로 존재하는지 확인 (테스트 데이터)
-    const user = await User.findByPk(dummyUserId);
-    const portfolio = await Portfolio.findByPk(dummyPortfolioId);
+    const user = await User.findByPk(userId);
+    const portfolio = await Portfolio.findByPk(portfolioId);
 
     if (!user || !portfolio) {
       return res
@@ -22,13 +17,25 @@ export const writeComment = async (req: Request, res: Response) => {
     }
 
     const newComment = await Comment.create({
-      portfolio_id: dummyPortfolioId,
-      user_id: dummyUserId,
+      portfolio_id: portfolioId,
+      user_id: userId,
       description: description,
       create_dt: new Date(),
     });
 
-    res.status(201).json({ message: "댓글 작성 완료", newComment });
+    const createdComment = await Comment.findOne({
+      where: { comment_id: newComment.comment_id },
+      include: [
+        {
+          model: User,
+          attributes: ["username", "uid"],
+        },
+      ],
+    });
+
+    res
+      .status(201)
+      .json({ message: "댓글 작성 완료", newComment: createdComment });
   } catch (error) {
     console.error("에러 발생:", error);
     res.status(500).json({ message: "Server error", error });
@@ -53,10 +60,11 @@ export const readComment = async (req: Request, res: Response) => {
           attributes: ["username", "uid"], // 가져올 사용자 정보
         },
       ],
-      attributes: ["description", "create_dt", "user_id"], // 가져올 댓글 정보
+      attributes: ["comment_id", "description", "create_dt", "user_id"], // 가져올 댓글 정보에 comment_id 추가
     });
 
     const formattedComments = comments.map((comment) => ({
+      comment_id: comment.comment_id, // comment_id 추가
       author: comment.user.username,
       user_id: comment.user.uid,
       description: comment.description,
