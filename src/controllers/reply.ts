@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { Reply } from "../models/reply";
 import { Request, Response } from "express";
 import { Account } from "../models/account";
+import { getKSTNow } from "../utils/time";
 
 export const writeReply = async (req: Request, res: Response) => {
   const { description, comment_id, userId } = req.body;
@@ -32,11 +33,12 @@ export const writeReply = async (req: Request, res: Response) => {
         .json({ message: "포트폴리오 작성자만 답글을 달 수 있습니다." });
     }
 
+    const kstNow = getKSTNow();
     const newReply = await Reply.create({
       comment_id,
       user_id: userId, // 포트폴리오 작성자의 ID
       description,
-      create_dt: new Date(),
+      create_dt: kstNow,
     });
 
     const user = await User.findByPk(userId);
@@ -118,9 +120,10 @@ export const updateReply = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "답글이 존재하지 않습니다." });
     }
 
+    const kstNow = getKSTNow();
     // 업데이트 할 데이터 설정
     reply.description = description;
-    reply.update_dt = new Date();
+    reply.update_dt = kstNow;
     reply.is_update = true;
 
     await reply.save();

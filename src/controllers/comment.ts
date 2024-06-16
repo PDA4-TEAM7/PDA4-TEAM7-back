@@ -2,6 +2,7 @@ import { Comment } from "../models/comment";
 import { Portfolio } from "../models/portfolio";
 import { User } from "../models/user";
 import { Request, Response } from "express";
+import { getKSTNow } from "../utils/time";
 
 export const writeComment = async (req: Request, res: Response) => {
   const { description, userId, portfolioId } = req.body;
@@ -16,11 +17,13 @@ export const writeComment = async (req: Request, res: Response) => {
         .json({ message: "해당 포트폴리오나 유저가 없습니다." });
     }
 
+    const kstNow = getKSTNow();
+
     const newComment = await Comment.create({
       portfolio_id: portfolioId,
       user_id: userId,
       description: description,
-      create_dt: new Date(),
+      create_dt: kstNow,
     });
 
     const createdComment = await Comment.findOne({
@@ -107,9 +110,11 @@ export const updateComment = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "댓글이 존재하지 않습니다." });
     }
 
+    const kstNow = getKSTNow();
+
     // 업데이트 할 데이터 설정
     comment.description = description;
-    comment.update_dt = new Date();
+    comment.update_dt = kstNow;
     comment.is_update = true;
 
     await comment.save();
