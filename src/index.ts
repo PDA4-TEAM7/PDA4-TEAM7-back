@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
-import { StockAccountApi } from "./services/stockAccountAPI";
+import { StockAccountApi } from "./services/apis/stockAccountAPI";
 import router from "./routes/index";
 const app = express();
 

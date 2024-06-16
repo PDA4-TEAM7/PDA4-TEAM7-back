@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { Account } from "../models/account";
 import { User } from "../models/user";
-import { HantuTokenApi, IAccessRes } from "../services/hantuTokenAPI";
-import { StockAccountApi } from "../services/stockAccountAPI";
+import { HantuTokenApi, IAccessRes } from "../services/apis/hantuTokenAPI";
+import { StockAccountApi } from "../services/apis/stockAccountAPI";
 
 export const setAccount = async (req: Request, res: Response) => {
   try {
