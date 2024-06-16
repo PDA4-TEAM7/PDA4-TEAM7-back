@@ -54,6 +54,17 @@ class AuthAPI {
       username: user.username,
     };
   }
+
+  static clearAuthentication = () => {
+    return {
+      cookieOptions: {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict" as "strict",
+        expires: new Date(0),
+      },
+    };
+  };
 }
 
 export default AuthAPI;

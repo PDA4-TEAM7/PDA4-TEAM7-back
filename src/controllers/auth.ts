@@ -67,3 +67,9 @@ export const signIn = async (req: Request, res: Response) => {
     res.status(500).json({ message: "로그인 처리 중 문제가 발생했습니다.", error });
   }
 };
+
+export const signOut = (req: Request, res: Response) => {
+  const { cookieOptions } = authAPI.clearAuthentication();
+  res.cookie("token", "", cookieOptions);
+  return res.status(200).json({ message: "로그아웃 성공!" });
+};
