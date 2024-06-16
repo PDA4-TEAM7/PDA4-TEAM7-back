@@ -26,10 +26,7 @@ export interface accountAttributes {
 }
 
 @Table({ tableName: "account", timestamps: false })
-export class Account
-  extends Model<accountAttributes, accountAttributes>
-  implements accountAttributes
-{
+export class Account extends Model<accountAttributes, accountAttributes> implements accountAttributes {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
   @Index({ name: "PRIMARY", using: "BTREE", order: "ASC", unique: true })
   account_id?: number;
