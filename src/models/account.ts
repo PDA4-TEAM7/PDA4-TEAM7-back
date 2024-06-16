@@ -20,6 +20,8 @@ export interface accountAttributes {
   app_key?: string;
   app_secret_key?: string;
   account_number?: string;
+  access_token?: string;
+  access_token_valid_dt?: Date;
   pchs_amt_smtl_amt?: number;
   evlu_amt_smtl_amt?: number;
   evlu_pfls_smtl_amt?: number;
@@ -42,7 +44,7 @@ export class Account extends Model<accountAttributes, accountAttributes> impleme
   @Column({ allowNull: true, type: DataType.STRING(255) })
   app_secret?: string;
 
-  @Column({ allowNull: true, type: DataType.STRING(255) })
+  @Column({ allowNull: true, type: DataType.TEXT })
   access_token?: string;
 
   @Column({ allowNull: true, type: DataType.DATE })
