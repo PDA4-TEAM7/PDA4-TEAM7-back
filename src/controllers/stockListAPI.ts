@@ -8,7 +8,16 @@ export const stockList = async (req: Request, res: Response) => {
   try {
     const stockList = await Stock.findAll({
       where: name ? { name } : {}, // name이 있으면 필터링, 없으면 모든 항목 가져오기
-      attributes: ["code", "std_idst_clsf_cd_name"],
+      attributes: [
+        "stock_id",
+        "market_id",
+        "name",
+        "code",
+        "listing_dt",
+        "delisting_dt",
+        "listing",
+        "std_idst_clsf_cd_name",
+      ],
     });
 
     res.json(stockList);
