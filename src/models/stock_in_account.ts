@@ -64,7 +64,7 @@ export class Stock_in_account
   @Column({ allowNull: true, type: DataType.BIGINT })
   evlu_pfls_amt?: number;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
+  @Column({ allowNull: true, type: DataType.DECIMAL(10, 4) })
   evlu_pfls_rt?: number;
 
   @BelongsTo(() => Account)
