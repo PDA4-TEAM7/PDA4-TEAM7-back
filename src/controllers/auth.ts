@@ -20,13 +20,11 @@ export const signUp = async (req: Request, res: Response) => {
       return res.json({ message: "이미 사용중인 사용자명입니다." });
     }
     const user = await authAPI.signUp({ user_id, username, password, confirm_password });
-
     const token = jwt.sign(
-      { user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
+      { uid: user.uid, user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
       JWT_SECRET,
       { expiresIn: "1h" } // 유효 시간 설정
     );
-
 
     res.cookie("token", token, {
       httpOnly: true, // 쿠키를 HTTP(S) 통신에서만 사용
@@ -69,10 +67,9 @@ export const signIn = async (req: Request, res: Response) => {
   }
 };
 
-
 export const signOut = (req: Request, res: Response) => {
+  console.log(req.user);
   const { cookieOptions } = authAPI.clearAuthentication();
   res.cookie("token", "", cookieOptions);
   return res.status(200).json({ message: "로그아웃 성공!" });
 };
-
