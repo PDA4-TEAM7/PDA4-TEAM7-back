@@ -7,7 +7,8 @@ import { Account } from "../models/account";
 import { getKSTNow } from "../utils/time";
 
 export const writeReply = async (req: Request, res: Response) => {
-  const { description, comment_id, userId } = req.body;
+  const { description, comment_id } = req.body;
+  const { user_id } = (req as any).user; // req.user에서 user_id와 username 가져오기
 
   try {
     const comment = await Comment.findByPk(comment_id);
@@ -15,6 +16,7 @@ export const writeReply = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
     }
 
+    const uid = await User.findOne({ where: { user_id } });
     const portfolio = await Portfolio.findByPk(comment.portfolio_id);
     if (!portfolio) {
       return res
@@ -27,7 +29,7 @@ export const writeReply = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "계정을 찾을 수 없습니다." });
     }
 
-    if (account.uid !== userId) {
+    if (account.uid !== uid?.uid) {
       return res
         .status(403)
         .json({ message: "포트폴리오 작성자만 답글을 달 수 있습니다." });
@@ -36,12 +38,12 @@ export const writeReply = async (req: Request, res: Response) => {
     const kstNow = getKSTNow();
     const newReply = await Reply.create({
       comment_id,
-      user_id: userId, // 포트폴리오 작성자의 ID
+      user_id: uid?.uid, // 포트폴리오 작성자의 ID
       description,
       create_dt: kstNow,
     });
 
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(uid?.uid);
 
     res.status(201).json({
       message: "답글 작성 완료",

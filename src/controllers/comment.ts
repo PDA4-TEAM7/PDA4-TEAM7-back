@@ -6,10 +6,11 @@ import { getKSTNow } from "../utils/time";
 
 export const writeComment = async (req: Request, res: Response) => {
   const { description, portfolioId } = req.body;
-  const { user_id, username } = (req as any).user; // req.user에서 user_id와 username 가져오기
+  const { uid, username } = (req as any).user; // req.user에서 uid와 username 가져오기
+
 
   try {
-    const user = await User.findOne({ where: { user_id } });
+    const user = await User.findByPk(uid);
     const portfolio = await Portfolio.findByPk(portfolioId);
 
     if (!user || !portfolio) {
