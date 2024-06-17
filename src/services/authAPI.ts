@@ -7,11 +7,13 @@ export interface IAuth {
   confirm_password: string;
 }
 interface UserSignUpResponse {
+  uid: number;
   user_id: string;
   username: string;
 }
 
 interface UserSignInResponse {
+  uid: number;
   user_id: string;
   username: string;
 }
@@ -24,11 +26,12 @@ class AuthAPI {
     try {
       const newUser = await User.create(auth);
 
-      if (newUser.user_id === undefined || newUser.username === undefined) {
+      if (newUser.uid === undefined || newUser.user_id === undefined || newUser.username === undefined) {
         throw new Error("사용자 정보가 충분하지 않습니다.");
       }
 
       return {
+        uid: newUser.uid,
         user_id: newUser.user_id,
         username: newUser.username,
       };
@@ -40,7 +43,7 @@ class AuthAPI {
   static async signIn(user_id: string, password: string): Promise<UserSignInResponse> {
     const user = await User.findOne({ where: { user_id: user_id } });
 
-    if (!user || !user.password || !user.user_id || !user.username) {
+    if (!user || !user.uid || !user.password || !user.user_id || !user.username) {
       throw new Error("User not found");
     }
 
@@ -50,6 +53,7 @@ class AuthAPI {
     }
 
     return {
+      uid: user.uid,
       user_id: user.user_id,
       username: user.username,
     };
