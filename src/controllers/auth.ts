@@ -72,7 +72,6 @@ export const signIn = async (req: Request, res: Response) => {
 };
 
 export const signOut = (req: Request, res: Response) => {
-  console.log(req.user);
   const { cookieOptions } = authAPI.clearAuthentication();
   res.cookie("token", "", cookieOptions);
   return res.status(200).json({ message: "로그아웃 성공!" });
