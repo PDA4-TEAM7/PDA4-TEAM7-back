@@ -16,6 +16,7 @@ export const stockAccount = async (req: Request, res: Response) => {
         "pchs_amt",
         "evlu_amt",
         "evlu_pfls_amt",
+        "evlu_pfls_rt",
       ],
     });
     res.json(stockAccount);
