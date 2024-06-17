@@ -18,18 +18,4 @@ const sequelize = new Sequelize({
   },
 });
 
-// new Sequelize(
-//   process.env.DB_DBNAME as string,
-//   process.env.DB_USERNAME as string,
-//   process.env.DB_PASSWORD as string,
-//   {
-//       dialect: 'mysql',
-//       dialectOptions: {
-//           // Your mysql2 options here
-//           host: process.env.DB_HOST as string,
-//           port: process.env.DB_PORT as string,
-//       },
-//   }
-// );
-
 export default sequelize;
