@@ -48,7 +48,9 @@ export const signIn = async (req: Request, res: Response) => {
     const user = await authAPI.signIn(user_id, password);
 
     if (!user) {
-      return res.status(401).json({ message: "로그인 실패: 사용자명 또는 비밀번호가 잘못되었습니다." });
+      return res.status(401).json({
+        message: "로그인 실패: 사용자명 또는 비밀번호가 잘못되었습니다.",
+      });
     }
 
     const token = jwt.sign(
