@@ -19,7 +19,12 @@ export const signUp = async (req: Request, res: Response) => {
     if (!isUsernameAvailable) {
       return res.json({ message: "이미 사용중인 사용자명입니다." });
     }
-    const user = await authAPI.signUp({ user_id, username, password, confirm_password });
+    const user = await authAPI.signUp({
+      user_id,
+      username,
+      password,
+      confirm_password,
+    });
 
     const token = jwt.sign(
       { user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
@@ -48,7 +53,9 @@ export const signIn = async (req: Request, res: Response) => {
     const user = await authAPI.signIn(user_id, password);
 
     if (!user) {
-      return res.status(401).json({ message: "로그인 실패: 사용자명 또는 비밀번호가 잘못되었습니다." });
+      return res.status(401).json({
+        message: "로그인 실패: 사용자명 또는 비밀번호가 잘못되었습니다.",
+      });
     }
 
     const token = jwt.sign(
@@ -65,7 +72,9 @@ export const signIn = async (req: Request, res: Response) => {
 
     return res.status(200).json({ user: user, message: "로그인 성공!" });
   } catch (error) {
-    res.status(500).json({ message: "로그인 처리 중 문제가 발생했습니다.", error });
+    res
+      .status(500)
+      .json({ message: "로그인 처리 중 문제가 발생했습니다.", error });
   }
 };
 
