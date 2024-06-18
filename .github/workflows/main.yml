@@ -53,10 +53,10 @@ jobs:
           sudo pm2 delete app || true  # 프로세스를 삭제, 없으면 무시
           
           # Ensure app.js exists before starting PM2
-          if [ -f /home/ubuntu/backend/pda4-team7-back/app.js ]; then
-            sudo pm2 start /home/ubuntu/backend/pda4-team7-back/app.js --name "app"  # "app" 이름으로 app.js 시작
+          if [ -f /home/ubuntu/backend/pda4-team7-back/src/app.js ]; then
+            sudo pm2 start /home/ubuntu/backend/pda4-team7-back/src/app.js --name "app"  # "app" 이름으로 app.js 시작
           else
-            echo "Error: /home/ubuntu/backend/pda4-team7-back/app.js not found"
+            echo "Error: /home/ubuntu/backend/pda4-team7-back/src/app.js not found"
             exit 1
           fi
           
