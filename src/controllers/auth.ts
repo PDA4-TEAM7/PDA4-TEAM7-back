@@ -78,7 +78,8 @@ export const signOut = (req: Request, res: Response) => {
 };
 
 export const isLogin = async (req: Request, res: Response) => {
-  const { uid } = (req as any).user;
+  const uid = req.user!.uid;
+
   const loginedUser = await authAPI.getLoginedUser(uid);
   return res.status(200).json({ ...loginedUser });
 };
