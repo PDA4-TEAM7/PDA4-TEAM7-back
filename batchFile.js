@@ -21,9 +21,13 @@ const config = {
   },
 };
 
-//Post로
+// Axios POST 요청 실행
 axios
-  .post("http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd", qs.stringify(payload), config)
+  .post(
+    "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+    qs.stringify(payload),
+    config
+  )
   .then((response) => {
     console.log("Response data:", response.data);
   })
