@@ -76,3 +76,9 @@ export const signOut = (req: Request, res: Response) => {
   res.cookie("token", "", cookieOptions);
   return res.status(200).json({ message: "로그아웃 성공!" });
 };
+
+export const isLogin = async (req: Request, res: Response) => {
+  const { uid } = (req as any).user;
+  const loginedUser = await authAPI.getLoginedUser(uid);
+  return res.status(200).json({ ...loginedUser });
+};
