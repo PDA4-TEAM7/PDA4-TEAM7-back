@@ -21,7 +21,7 @@ const config = {
   },
 };
 
-// Axios POST 요청 실행
+//Post로
 axios
   .post(
     "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
