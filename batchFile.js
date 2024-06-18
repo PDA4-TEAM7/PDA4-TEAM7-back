@@ -23,11 +23,7 @@ const config = {
 
 //Post로
 axios
-  .post(
-    "http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
-    qs.stringify(payload),
-    config
-  )
+  .post("http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd", qs.stringify(payload), config)
   .then((response) => {
     console.log("Response data:", response.data);
   })
