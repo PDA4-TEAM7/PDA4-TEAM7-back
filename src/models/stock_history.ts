@@ -22,7 +22,7 @@ export interface stockHistoryAttributes {
   update_dt?: Date;
 }
 
-@Table({ tableName: "stock_history", timestamps: true })
+@Table({ tableName: "stock_history", timestamps: false })
 export class Stock_history
   extends Model<stockHistoryAttributes, stockHistoryAttributes>
   implements stockHistoryAttributes
@@ -43,7 +43,7 @@ export class Stock_history
   @Column({ allowNull: true, type: DataType.BIGINT })
   closing_price?: number;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
+  @Column({ allowNull: true, type: DataType.DATE })
   update_dt?: Date;
 
   @BelongsTo(() => Stock)

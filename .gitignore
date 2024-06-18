@@ -1,5 +1,9 @@
 .env
 
+#prettierrc
+.prettierrc
+.eslintrc.cjs
+
 # Logs
 logs
 *.log
@@ -183,3 +187,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# db data file
+data/

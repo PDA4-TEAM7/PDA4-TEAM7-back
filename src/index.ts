@@ -2,23 +2,38 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
-import { stockAccountApi } from "./services/stockAccountAPI";
+
+import { StockAccountApi } from "./services/apis/stockAccountAPI";
+import router from "./routes/index";
+import { insertExcelDataToDb } from "./utils/addStockdb";
+import cookieParser from "cookie-parser";
+import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
 
 const app = express();
 
 // 기본 미들웨어
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cookieParser()); // Add this line to use cookie-parser
 
+// CORS설정
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// stock, stock_history 채우는 파일
+// insertExcelDataToDb();
+
+app.use(decodeTokenMiddleware); // 전역 미들웨어 설정
 // 루트 라우트
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the API");
 });
+
+app.use("/api", router());
+
+//DUMMY : 한투 테스트용 api 나중에 지울예정
 app.get("/me", async (req: Request, res: Response) => {
   try {
-    const hantuService = new stockAccountApi();
-    const data = await hantuService.inquireBalance();
+    const hantuService = new StockAccountApi();
+    const data = await hantuService.inquireBalance("");
     console.log(data);
     res.send(data);
   } catch (err) {
