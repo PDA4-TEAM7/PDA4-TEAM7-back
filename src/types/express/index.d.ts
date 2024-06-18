@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 declare global {
   namespace Express {
     interface Request {
-      user?: { uid: string; username: string; user_id: string };
+      user?: { uid: string; username: string };
     }
   }
 }
