@@ -5,10 +5,12 @@ import { Request, Response } from "express";
 import { getKSTNow } from "../utils/time";
 
 export const writeComment = async (req: Request, res: Response) => {
-  const { description, userId, portfolioId } = req.body;
+  const { description, portfolioId } = req.body;
+  const { uid, username } = (req as any).user; // req.user에서 uid와 username 가져오기
+
 
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(uid);
     const portfolio = await Portfolio.findByPk(portfolioId);
 
     if (!user || !portfolio) {
@@ -21,7 +23,7 @@ export const writeComment = async (req: Request, res: Response) => {
 
     const newComment = await Comment.create({
       portfolio_id: portfolioId,
-      user_id: userId,
+      user_id: user.uid,
       description: description,
       create_dt: kstNow,
     });

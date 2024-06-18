@@ -20,13 +20,11 @@ export const signUp = async (req: Request, res: Response) => {
       return res.json({ message: "이미 사용중인 사용자명입니다." });
     }
     const user = await authAPI.signUp({ user_id, username, password, confirm_password });
-
     const token = jwt.sign(
-      { user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
+      { uid: user.uid, user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
       JWT_SECRET,
       { expiresIn: "1h" } // 유효 시간 설정
     );
-
 
     res.cookie("token", token, {
       httpOnly: true, // 쿠키를 HTTP(S) 통신에서만 사용
@@ -35,7 +33,9 @@ export const signUp = async (req: Request, res: Response) => {
       sameSite: "strict", // CSRF 공격 방지
     });
 
-    return res.status(200).json({ user: user, message: "회원가입 성공!" });
+    return res
+      .status(200)
+      .json({ user: { user_id: user.user_id, username: user.username }, message: "회원가입 성공!" });
   } catch (error) {
     res.status(500).json({ message: "회원가입 실패!", error: error });
     console.error(error);
@@ -48,11 +48,13 @@ export const signIn = async (req: Request, res: Response) => {
     const user = await authAPI.signIn(user_id, password);
 
     if (!user) {
-      return res.status(401).json({ message: "로그인 실패: 사용자명 또는 비밀번호가 잘못되었습니다." });
+      return res.status(401).json({
+        message: "로그인 실패: 사용자명 또는 비밀번호가 잘못되었습니다.",
+      });
     }
 
     const token = jwt.sign(
-      { user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
+      { uid: user.uid, user_id: user.user_id, username: user.username }, // 사용자 식별 정보 포함
       JWT_SECRET,
       { expiresIn: "1h" } // 토큰 유효 시간 설정
     );
@@ -63,16 +65,14 @@ export const signIn = async (req: Request, res: Response) => {
       sameSite: "strict", // CSRF 공격 방지
     });
 
-    return res.status(200).json({ user: user, message: "로그인 성공!" });
+    return res.status(200).json({ user: { user_id: user.user_id, username: user.username }, message: "로그인 성공!" });
   } catch (error) {
     res.status(500).json({ message: "로그인 처리 중 문제가 발생했습니다.", error });
   }
 };
-
 
 export const signOut = (req: Request, res: Response) => {
   const { cookieOptions } = authAPI.clearAuthentication();
   res.cookie("token", "", cookieOptions);
   return res.status(200).json({ message: "로그아웃 성공!" });
 };
-

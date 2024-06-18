@@ -12,6 +12,7 @@ export interface userAttributes {
   password?: string;
   credit?: number;
   join_dt?: Date;
+  introduce?: string;
 }
 
 async function hashPassword(user: User) {
@@ -28,6 +29,7 @@ async function hashPassword(user: User) {
     beforeCreate: async (user: User) => {
       await hashPassword(user);
       user.join_dt = new Date();
+      user.introduce = `안녕하세요 ${user.username}입니다.`;
     },
     beforeUpdate: async (user: User, options) => {
       if (user.changed("password")) {
@@ -89,6 +91,12 @@ export class User extends Model<userAttributes, userAttributes> implements userA
     defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
   })
   join_dt?: Date;
+
+  @Column({
+    allowNull: true,
+    type: DataType.STRING(255),
+  })
+  introduce?: string;
 
   @HasMany(() => Account)
   accounts!: Account[];
