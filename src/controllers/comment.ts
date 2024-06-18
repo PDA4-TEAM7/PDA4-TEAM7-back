@@ -6,16 +6,17 @@ import { getKSTNow } from "../utils/time";
 
 export const writeComment = async (req: Request, res: Response) => {
   const { description, portfolioId } = req.body;
-  // 로그인유저 아니면 에러임
-  if (!req.user) return res.status(403).json({ message: "로그인 하세요" });
-  const { uid, username } = req.user; // req.user에서 uid와 username 가져오기
+  const { uid, username } = (req as any).user; // req.user에서 uid와 username 가져오기
+
 
   try {
     const user = await User.findByPk(uid);
     const portfolio = await Portfolio.findByPk(portfolioId);
 
     if (!user || !portfolio) {
-      return res.status(404).json({ message: "해당 포트폴리오나 유저가 없습니다." });
+      return res
+        .status(404)
+        .json({ message: "해당 포트폴리오나 유저가 없습니다." });
     }
 
     const kstNow = getKSTNow();
@@ -37,7 +38,9 @@ export const writeComment = async (req: Request, res: Response) => {
       ],
     });
 
-    res.status(201).json({ message: "댓글 작성 완료", newComment: createdComment });
+    res
+      .status(201)
+      .json({ message: "댓글 작성 완료", newComment: createdComment });
   } catch (error) {
     console.error("에러 발생:", error);
     res.status(500).json({ message: "Server error", error });
