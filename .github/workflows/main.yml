@@ -27,7 +27,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          cd /home/ubuntu/backend
+          cd /home/ubuntu/backend/pda4-team7-back
           git pull
           echo "${{ secrets.PROD_ENV_FILE }}" > .env
           npm install --production
