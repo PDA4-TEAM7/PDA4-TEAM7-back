@@ -23,7 +23,7 @@ export const setAccount = async (req: Request, res: Response) => {
     const newAccount = await Account.create({
       uid: user?.uid,
       app_key: appkey,
-      app_secret_key: appsecretkey,
+      app_secret: appsecretkey,
       access_token: accessToken,
       access_token_valid_dt: new Date(accessRes.access_token_token_expired),
       account_number: accountNo,
@@ -36,14 +36,7 @@ export const setAccount = async (req: Request, res: Response) => {
     //5-0. 없는 종목 stock테이블에 추가.
     for (let data of stocks) {
       let st = await Stock.findOne({ where: { code: data.pdno } });
-      if (!st) {
-        st = await Stock.create({
-          market_id: 0,
-          name: data.prdt_name,
-          code: data.pdno,
-          listing: true,
-        });
-      }
+      if (!st) throw Error(`없는 주식번호입니다. 어째서? pdno: ${data.pdno}`);
       //5. output1의 값으로 stock_in_account 추가
       const newStockInAccount = await Stock_in_account.create({
         account_id: newAccount.account_id,
@@ -69,7 +62,13 @@ export const getAccount = async (req: Request, res: Response) => {
   try {
     const { accountId } = req.params;
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    const accountStocks = await Stock_in_account.findAll({ where: { account_id: accountId } });
+    const accountStocks = await Stock_in_account.findAll({
+      where: { account_id: accountId },
+      include: {
+        model: Stock,
+        attributes: ["name"],
+      },
+    });
 
     return res.status(200).json({ message: "Hello get account", accountStocks: accountStocks });
   } catch (error) {
