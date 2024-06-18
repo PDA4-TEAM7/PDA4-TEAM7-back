@@ -27,13 +27,14 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          cd /home/***/backend/pda4-team7-back
-          git config --global --add safe.directory /home/***/backend/pda4-team7-back
+          cd /home/ubuntu/backend/pda4-team7-back
+          sudo chown -R $(whoami) .git  # Git 관련 파일의 소유권 변경
+          git config --global --add safe.directory /home/ubuntu/backend/pda4-team7-back
           git pull
-          echo ${{ secrets.PROD_ENV_FILE }} | sudo tee .env
+          echo "${{ secrets.PROD_ENV_FILE }}" | sudo tee .env
           sudo npm ci
           sudo npm install --production
-          sudo pm2 stop app || true
-          sudo pm2 delete app || true
-          sudo pm2 start app.js --name "app"
+          sudo pm2 stop app || true  # 프로세스를 중지, 없으면 무시
+          sudo pm2 delete app || true  # 프로세스를 삭제, 없으면 무시
+          sudo pm2 start /home/ubuntu/backend/pda4-team7-back/app.js --name "app"  # "app" 이름으로 app.js 시작
 
