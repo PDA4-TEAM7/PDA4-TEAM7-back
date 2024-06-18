@@ -47,16 +47,19 @@ jobs:
           # 필요한 npm 패키지 설치
           sudo npm ci
           sudo npm install --production
+
+          # tsc로 컴파일
+          sudo tsc
           
           # PM2를 사용하여 애플리케이션 재시작
           sudo pm2 stop app || true  # 프로세스를 중지, 없으면 무시
           sudo pm2 delete app || true  # 프로세스를 삭제, 없으면 무시
           
           # Ensure app.js exists before starting PM2
-          if [ -f /home/ubuntu/backend/pda4-team7-back/src/app.js ]; then
-            sudo pm2 start /home/ubuntu/backend/pda4-team7-back/src/app.js --name "app"  # "app" 이름으로 app.js 시작
+          if [ -f /home/ubuntu/backend/pda4-team7-back/dist/app.js ]; then
+            sudo pm2 start /home/ubuntu/backend/pda4-team7-back/dist/app.js --name "app"  # "app" 이름으로 app.js 시작
           else
-            echo "Error: /home/ubuntu/backend/pda4-team7-back/src/app.js not found"
+            echo "Error: /home/ubuntu/backend/pda4-team7-back/dist/app.js not found"
             exit 1
           fi
           
