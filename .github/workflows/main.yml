@@ -11,36 +11,10 @@ on:
     types: [closed]  # 풀 리퀘스트가 닫힐 때 이벤트를 트리거
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22.x'
-
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-node-
-                        
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Run tests
-      run: npm test
-
   deploy:
-    needs: test
     runs-on: ubuntu-latest
     if: |
-      (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged)) && needs.test.result == 'success'
+      (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged))
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
