@@ -28,7 +28,8 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/backend/pda4-team7-back
-          sudo chown -R $(whoami) .git  # Git 관련 파일의 소유권 변경
+          sudo chown -R $(whoami):$(whoami) /home/ubuntu/backend/pda4-team7-back
+          sudo chmod -R 777 /home/ubuntu/backend/pda4-team7-back  # 작업 디렉토리에 대해 모든 권한 부여
           git config --global --add safe.directory /home/ubuntu/backend/pda4-team7-back
           git pull
           echo "${{ secrets.PROD_ENV_FILE }}" | sudo tee .env
@@ -36,5 +37,16 @@ jobs:
           sudo npm install --production
           sudo pm2 stop app || true  # 프로세스를 중지, 없으면 무시
           sudo pm2 delete app || true  # 프로세스를 삭제, 없으면 무시
-          sudo pm2 start /home/ubuntu/backend/pda4-team7-back/app.js --name "app"  # "app" 이름으로 app.js 시작
+
+          # Ensure app.js exists before starting PM2
+          if [ -f /home/ubuntu/backend/pda4-team7-back/app.js ]; then
+            sudo pm2 start /home/ubuntu/backend/pda4-team7-back/app.js --name "app"  # "app" 이름으로 app.js 시작
+          else
+            echo "Error: /home/ubuntu/backend/pda4-team7-back/app.js not found"
+            exit 1
+          fi
+
+          # 작업 후 권한 원래 상태로 되돌리기
+          sudo chmod -R 755 /home/ubuntu/backend/pda4-team7-back
+          sudo chown -R root:root /home/ubuntu/backend/pda4-team7-back
 
