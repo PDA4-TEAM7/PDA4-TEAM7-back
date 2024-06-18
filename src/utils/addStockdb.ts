@@ -5,11 +5,8 @@ import { Stock } from "../models/stock";
 import { db } from "../models/index";
 import { Stock_history } from "../models/stock_history";
 import { getKSTNow } from "./time";
-// CSV 파일 경로
+// xlsx 파일 경로
 const KOSDAQFilePath = path.resolve(__dirname, "../../data/data_0204_20240617.xlsx");
-
-// CSV 파일 경로
-// const KOSDAQFilePath = "../../data/data_0204_20240617.xlsx";
 
 // Excel 파일을 읽고 데이터베이스에 삽입하는 함수
 const insertExcelDataToDb = async () => {
