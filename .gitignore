@@ -187,3 +187,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# db data file
+data/

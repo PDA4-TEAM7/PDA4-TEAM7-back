@@ -18,7 +18,7 @@ export interface accountAttributes {
   account_id?: number;
   uid?: number;
   app_key?: string;
-  app_secret_key?: string;
+  app_secret?: string;
   account_number?: string;
   access_token?: string;
   access_token_valid_dt?: Date;

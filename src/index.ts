@@ -5,7 +5,7 @@ import { initializeDatabase } from "./models/index";
 
 import { StockAccountApi } from "./services/apis/stockAccountAPI";
 import router from "./routes/index";
-
+import { insertExcelDataToDb } from "./utils/addStockdb";
 import cookieParser from "cookie-parser";
 import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
 
@@ -18,6 +18,8 @@ app.use(cookieParser()); // Add this line to use cookie-parser
 
 // CORS설정
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// stock, stock_history 채우는 파일
+// insertExcelDataToDb();
 
 app.use(decodeTokenMiddleware); // 전역 미들웨어 설정
 // 루트 라우트

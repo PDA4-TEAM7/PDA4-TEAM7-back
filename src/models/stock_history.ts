@@ -43,7 +43,7 @@ export class Stock_history
   @Column({ allowNull: true, type: DataType.BIGINT })
   closing_price?: number;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
+  @Column({ allowNull: true, type: DataType.DATE })
   update_dt?: Date;
 
   @BelongsTo(() => Stock)
