@@ -63,7 +63,7 @@ const startServer = async () => {
           timezone: "Asia/Seoul",
         }
       );
-
+      
       // 크론잡 설정: 매일 오후 3시 35분에 fetchKosdaqData 실행 (한국 표준시 기준)
       cron.schedule(
         "05 10 * * *",
