@@ -5,6 +5,7 @@ import validate from "./validate";
 import stock from "./stock";
 import stock_account from "./stock_account";
 import stockhistory from "./stockhistory";
+import stock_join from "./stock_join";
 import reply from "./reply";
 import auth from "./auth";
 import user from "./user";
@@ -18,6 +19,7 @@ export default (): express.Router => {
   stock(router);
   stock_account(router);
   stockhistory(router);
+  stock_join(router);
   validate(router);
   auth(router);
   user(router);
