@@ -37,7 +37,7 @@ jobs:
           echo "Current Node.js version: $node_version"
           if [ "$node_version" != "v20.*" ]; then
             # Node.js 20으로 업데이트
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            # curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
             sudo apt-get install -y nodejs
           fi
 
@@ -53,6 +53,7 @@ jobs:
           git config --global --add safe.directory /home/ubuntu/backend/pda4-team7-back
           
           # 최신 코드 가져오기
+          fit fetch --all
           git reset --hard origin/main
           
           # 환경 변수 파일 생성
