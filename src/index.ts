@@ -53,7 +53,7 @@ const startServer = async () => {
 
       // 크론잡 설정: 매일 오후 3시 30분에 fetchKospiData 실행 (한국 표준시 기준)
       cron.schedule(
-        "00 10 * * *",
+        "00 16 * * *",
         async () => {
           console.log("Running fetchKospiData at 3:30 PM KST");
           await fetchKospiData();
@@ -66,7 +66,7 @@ const startServer = async () => {
 
       // 크론잡 설정: 매일 오후 3시 35분에 fetchKosdaqData 실행 (한국 표준시 기준)
       cron.schedule(
-        "05 10 * * *",
+        "05 16 * * *",
         async () => {
           console.log("Running fetchKosdaqData at 3:35 PM KST");
           await fetchKosdaqData();
