@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Add this line to use cookie-parser
 
 // CORS설정
+
 app.use(cors({ origin: process.env.CORS_ORIGIN_URL, credentials: true }));
 // stock, stock_history 채우는 파일
 // insertExcelDataToDb();

@@ -50,7 +50,9 @@ export const setAccount = async (req: Request, res: Response) => {
         evlu_pfls_amt: data.evlu_pfls_amt,
       });
     }
-    const accountStocks = await Stock_in_account.findAll({ where: { account_id: newAccount.account_id } });
+    const accountStocks = await Stock_in_account.findAll({
+      where: { account_id: newAccount.account_id },
+    });
     //6. output2로 평가금액합계, 등 정보 추가
     return res.status(200).json({ message: "Hello make account", newAccount, accountStocks });
   } catch (error) {
@@ -84,7 +86,6 @@ export const getMyAccountList = async (req: Request, res: Response) => {
     const { uid } = (req as any).user;
     const accountList = await Account.findAll({ where: { uid: uid }, attributes: ["account_number"] });
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    console.log("lsit:", accountList);
     return res.status(200).json({ message: "my account list", accountList });
   } catch (error) {
     console.log("account make error", error);
