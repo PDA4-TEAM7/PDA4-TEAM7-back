@@ -2,15 +2,14 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
-
 import { StockAccountApi } from "./services/apis/stockAccountAPI";
 import router from "./routes/index";
-import { insertExcelDataToDb } from "./utils/addStockdb";
 import cookieParser from "cookie-parser";
 import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
+import { fetchKospiData, fetchKosdaqData } from "./scheduler/updateStockData";
+import cron from "node-cron";
 
 const app = express();
-
 // 기본 미들웨어
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,8 +17,6 @@ app.use(cookieParser()); // Add this line to use cookie-parser
 
 // CORS설정
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-// stock, stock_history 채우는 파일
-// insertExcelDataToDb();
 
 app.use(decodeTokenMiddleware); // 전역 미들웨어 설정
 // 루트 라우트
@@ -53,6 +50,32 @@ const startServer = async () => {
   app.listen(config.port, async () => {
     try {
       await initializeDatabase(); // 모델 초기화와 동기화
+
+      // 크론잡 설정: 매일 오후 3시 30분에 fetchKospiData 실행 (한국 표준시 기준)
+      cron.schedule(
+        "00 10 * * *",
+        async () => {
+          console.log("Running fetchKospiData at 3:30 PM KST");
+          await fetchKospiData();
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+
+      // 크론잡 설정: 매일 오후 3시 35분에 fetchKosdaqData 실행 (한국 표준시 기준)
+      cron.schedule(
+        "05 10 * * *",
+        async () => {
+          console.log("Running fetchKosdaqData at 3:35 PM KST");
+          await fetchKosdaqData();
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
     } catch (error) {
       console.error("Server startup failed:", error);
       return; // 데이터베이스 초기화 실패시 서버를 시작하지 않음
