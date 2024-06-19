@@ -30,7 +30,11 @@ export const setAccount = async (req: Request, res: Response) => {
     });
 
     //4. 주식잔고조회 날리기.
-    const stockAccountApi = new StockAccountApi(appkey, appsecretkey, accessToken);
+    const stockAccountApi = new StockAccountApi(
+      appkey,
+      appsecretkey,
+      accessToken
+    );
     const inquirePriceRes = await stockAccountApi.inquireBalance(accountNo);
     const stocks: IStock[] = inquirePriceRes.output1;
     //5-0. 없는 종목 stock테이블에 추가.
@@ -48,9 +52,13 @@ export const setAccount = async (req: Request, res: Response) => {
         evlu_pfls_amt: data.evlu_pfls_amt,
       });
     }
-    const accountStocks = await Stock_in_account.findAll({ where: { account_id: newAccount.account_id } });
+    const accountStocks = await Stock_in_account.findAll({
+      where: { account_id: newAccount.account_id },
+    });
     //6. output2로 평가금액합계, 등 정보 추가
-    return res.status(200).json({ message: "Hello make account", newAccount, accountStocks });
+    return res
+      .status(200)
+      .json({ message: "Hello make account", newAccount, accountStocks });
   } catch (error) {
     //2. 토큰 발급안되면 잘못된키.실패 내보내기.
     console.log("account make error", error);
@@ -70,7 +78,9 @@ export const getAccount = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({ message: "Hello get account", accountStocks: accountStocks });
+    return res
+      .status(200)
+      .json({ message: "Hello get account", accountStocks: accountStocks });
   } catch (error) {
     console.log("account make error", error);
     return res.sendStatus(401);
@@ -81,7 +91,9 @@ export const getAccountList = async (req: Request, res: Response) => {
   try {
     const { account, appkey, appsecretkey, uid } = req.body;
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    return res.status(200).json({ message: "Hello make account", uid, account });
+    return res
+      .status(200)
+      .json({ message: "Hello make account", uid, account });
   } catch (error) {
     console.log("account make error", error);
     return res.sendStatus(401);
@@ -91,7 +103,9 @@ export const deleteAccount = async (req: Request, res: Response) => {
   try {
     const { account, appkey, appsecretkey, uid } = req.body;
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    return res.status(200).json({ message: "Hello make account", uid, account });
+    return res
+      .status(200)
+      .json({ message: "Hello make account", uid, account });
   } catch (error) {
     console.log("account make error", error);
     return res.sendStatus(401);
