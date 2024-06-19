@@ -59,6 +59,21 @@ class AuthAPI {
     };
   }
 
+  static async getLoginedUser(uid: number): Promise<UserSignInResponse> {
+    try {
+      const user = await User.findByPk(uid);
+      if (!user || !user.uid || !user.user_id || !user.username) {
+        throw new Error("User not found");
+      }
+      return {
+        uid: user.uid,
+        user_id: user.user_id,
+        username: user.username,
+      };
+    } catch (error) {
+      throw new Error("User not found");
+    }
+  }
   static clearAuthentication = () => {
     return {
       cookieOptions: {
