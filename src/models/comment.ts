@@ -6,7 +6,6 @@ import { Reply } from './reply';
 export interface commentAttributes {
     comment_id?: number;
     portfolio_id?: number;
-    //
     user_id?: number;
     description?: string;
     create_dt?: Date;
