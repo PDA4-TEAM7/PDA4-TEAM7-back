@@ -6,10 +6,12 @@ import { IStock, StockAccountApi } from "../services/apis/stockAccountAPI";
 import { Stock_in_account } from "../models/stock_in_account";
 import { Stock, stockAttributes } from "../models/stock";
 
+//내 계정 추가
 export const setAccount = async (req: Request, res: Response) => {
   try {
     //accountNo는 8자리 숫자
-    const { accountNo, uid, appkey, appsecretkey } = req.body;
+    const { accountNo, appkey, appsecretkey } = req.body;
+    const { uid } = (req as any).user;
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
     //user가져오기.
     const user = await User.findByPk(uid);
@@ -30,11 +32,7 @@ export const setAccount = async (req: Request, res: Response) => {
     });
 
     //4. 주식잔고조회 날리기.
-    const stockAccountApi = new StockAccountApi(
-      appkey,
-      appsecretkey,
-      accessToken
-    );
+    const stockAccountApi = new StockAccountApi(appkey, appsecretkey, accessToken);
     const inquirePriceRes = await stockAccountApi.inquireBalance(accountNo);
     const stocks: IStock[] = inquirePriceRes.output1;
     //5-0. 없는 종목 stock테이블에 추가.
@@ -56,16 +54,14 @@ export const setAccount = async (req: Request, res: Response) => {
       where: { account_id: newAccount.account_id },
     });
     //6. output2로 평가금액합계, 등 정보 추가
-    return res
-      .status(200)
-      .json({ message: "Hello make account", newAccount, accountStocks });
+    return res.status(200).json({ message: "Hello make account", newAccount, accountStocks });
   } catch (error) {
     //2. 토큰 발급안되면 잘못된키.실패 내보내기.
     console.log("account make error", error);
     return res.sendStatus(401);
   }
 };
-
+// accountId로 특정 계정 조회
 export const getAccount = async (req: Request, res: Response) => {
   try {
     const { accountId } = req.params;
@@ -78,34 +74,30 @@ export const getAccount = async (req: Request, res: Response) => {
       },
     });
 
-    return res
-      .status(200)
-      .json({ message: "Hello get account", accountStocks: accountStocks });
+    return res.status(200).json({ message: "Hello get account", accountStocks: accountStocks });
   } catch (error) {
     console.log("account make error", error);
     return res.sendStatus(401);
   }
 };
-
-export const getAccountList = async (req: Request, res: Response) => {
+// 내 계정리스트 조회 (계좌번호..)
+export const getMyAccountList = async (req: Request, res: Response) => {
   try {
-    const { account, appkey, appsecretkey, uid } = req.body;
+    const { uid } = (req as any).user;
+    const accountList = await Account.findAll({ where: { uid: uid }, attributes: ["account_number"] });
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    return res
-      .status(200)
-      .json({ message: "Hello make account", uid, account });
+    return res.status(200).json({ message: "my account list", accountList });
   } catch (error) {
     console.log("account make error", error);
     return res.sendStatus(401);
   }
 };
+//내 계정 제거
 export const deleteAccount = async (req: Request, res: Response) => {
   try {
     const { account, appkey, appsecretkey, uid } = req.body;
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    return res
-      .status(200)
-      .json({ message: "Hello make account", uid, account });
+    return res.status(200).json({ message: "Hello make account", uid, account });
   } catch (error) {
     console.log("account make error", error);
     return res.sendStatus(401);
