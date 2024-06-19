@@ -10,7 +10,8 @@ import { Stock, stockAttributes } from "../models/stock";
 export const setAccount = async (req: Request, res: Response) => {
   try {
     //accountNo는 8자리 숫자
-    const { accountNo, uid, appkey, appsecretkey } = req.body;
+    const { accountNo, appkey, appsecretkey } = req.body;
+    const { uid } = (req as any).user;
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
     //user가져오기.
     const user = await User.findByPk(uid);
@@ -81,8 +82,9 @@ export const getAccount = async (req: Request, res: Response) => {
 export const getMyAccountList = async (req: Request, res: Response) => {
   try {
     const { uid } = (req as any).user;
-    const accountList = Account.findAll({ where: { uid: uid } });
+    const accountList = await Account.findAll({ where: { uid: uid }, attributes: ["account_number"] });
     //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
+    console.log("lsit:", accountList);
     return res.status(200).json({ message: "my account list", accountList });
   } catch (error) {
     console.log("account make error", error);
