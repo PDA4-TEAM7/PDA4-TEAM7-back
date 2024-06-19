@@ -14,7 +14,6 @@ const sequelize = new Sequelize({
   timezone: "+09:00", // 한국 표준시 (KST) 설정
   dialectOptions: {
     charset: "utf8mb4",
-    collate: "utf8mb4_unicode_ci",
   },
 });
 
