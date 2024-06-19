@@ -9,6 +9,8 @@ import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
 import { fetchKospiData, fetchKosdaqData } from "./scheduler/updateStockData";
 import cron from "node-cron";
 
+import * as dotenv from "dotenv";
+dotenv.config();
 const app = express();
 // 기본 미들웨어
 app.use(express.json());
@@ -16,7 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Add this line to use cookie-parser
 
 // CORS설정
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: process.env.CORS_ORIGIN_URL, credentials: true }));
+// stock, stock_history 채우는 파일
+// insertExcelDataToDb();
 
 app.use(decodeTokenMiddleware); // 전역 미들웨어 설정
 // 루트 라우트
