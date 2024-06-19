@@ -5,7 +5,12 @@ import { User } from "../models/user";
 export const getUserInfo = async (req: Request, res: Response) => {
   const { uid } = (req as any).user;
   const userInfo = await UserAPI.getUserInfo(uid);
-  return res.status(200).json({ ...userInfo });
+  return res.status(200).json({
+    user_id: userInfo?.user_id,
+    username: userInfo?.username,
+    introduce: userInfo?.introduce,
+    credit: userInfo?.credit,
+  });
 };
 
 export const setUserInfo = async (req: Request, res: Response) => {
