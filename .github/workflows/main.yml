@@ -13,11 +13,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30 
     if: |
       (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged))
     steps:
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Node.js 20 지원 버전으로 변경
 
     - name: Setup SSH and Deploy to EC2
       uses: appleboy/ssh-action@master
@@ -27,6 +33,14 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
+          node_version=$(node -v)
+          echo "Current Node.js version: $node_version"
+          if [ "$node_version" != "v20.*" ]; then
+            # Node.js 20으로 업데이트
+            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+          fi
+
           cd /home/ubuntu/backend/pda4-team7-back
           
           # Git 관련 파일의 소유권 변경
@@ -39,14 +53,14 @@ jobs:
           git config --global --add safe.directory /home/ubuntu/backend/pda4-team7-back
           
           # 최신 코드 가져오기
-          git pull
+          git reset --hard origin/main
           
           # 환경 변수 파일 생성
           echo "${{ secrets.PROD_ENV_FILE }}" | sudo tee .env
           
           # 필요한 npm 패키지 설치
-          sudo npm ci
-          sudo npm install --production
+          sudo npm install
+          # sudo npm install --production
 
           # tsc로 컴파일
           sudo tsc
@@ -64,4 +78,4 @@ jobs:
           fi
           
           # 작업 후 권한 원래 상태로 되돌리기
-          sudo chown -R root:root /home/ubuntu/backend/pda4-team7-back
+          # sudo chown -R root:root /home/ubuntu/backend/pda4-team7-back
