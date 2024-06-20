@@ -61,9 +61,9 @@ def buy_stock(money, stock_price, last_stock_num, stock_rate):
     stock_num = money * stock_rate // stock_price
     stock_money = stock_num * stock_price
     if last_stock_num < stock_num:
-        fee = 0.00015 # 매수 수수료
+        fee = 0.00015 # 매수 수수료, 토스 증권 기준
     else:
-        fee = 0.0023 # 매도 수수료
+        fee = 0.000195 # 매도 수수료, 토스 증권 기준
     buy_sell_fee = abs(last_stock_num - stock_num) * stock_price * fee
 
     #돈 없으면 주식 갯수 조정
@@ -83,9 +83,9 @@ def buy_stock_more(money, stock_price, last_stock_num, stock_rate):
     stock_num = money * stock_rate // stock_price
     stock_money = stock_num * stock_price
     if last_stock_num < stock_num:
-        fee = 0.00015 # 매수 수수료
+        fee = 0.00015 # 매수 수수료 ,토스 증권 기준
     else:
-        fee = 0.0023 # 매도 수수료
+        fee = 0.00195 # 매도 수수료, 토스 증권 기준
     buy_sell_fee = stock_num * stock_price * fee
     while stock_num > 0 and money < (stock_money + buy_sell_fee):
         stock_num -= 1
