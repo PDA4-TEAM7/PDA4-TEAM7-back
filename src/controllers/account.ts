@@ -45,7 +45,7 @@ export const setAccount = async (req: Request, res: Response) => {
         account_id: newAccount.account_id,
         stock_id: st.stock_id,
         market_id: 1,
-        quantity: data.hldg_qty,
+        hldg_qty: data.hldg_qty,
         pchs_amt: data.pchs_amt,
         evlu_amt: data.evlu_amt,
         evlu_pfls_amt: data.evlu_pfls_amt,
