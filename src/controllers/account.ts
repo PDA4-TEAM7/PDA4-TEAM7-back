@@ -84,8 +84,10 @@ export const getAccount = async (req: Request, res: Response) => {
 export const getMyAccountList = async (req: Request, res: Response) => {
   try {
     const { uid } = (req as any).user;
-    const accountList = await Account.findAll({ where: { uid: uid }, attributes: ["account_number"] });
-    //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
+    const accountList = await Account.findAll({
+      where: { uid: uid },
+      attributes: ["account_id", "account_number"],
+    });
     return res.status(200).json({ message: "my account list", accountList });
   } catch (error) {
     console.log("account make error", error);

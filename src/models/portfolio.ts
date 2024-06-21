@@ -1,14 +1,4 @@
-import {
-  Model,
-  Table,
-  Column,
-  DataType,
-  Index,
-  Sequelize,
-  ForeignKey,
-  BelongsTo,
-  HasMany,
-} from "sequelize-typescript";
+import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
 import { Account } from "./account";
 import { Sub_portfolio } from "./sub_portfolio";
 import { Comment } from "./comment";
@@ -26,10 +16,7 @@ export interface portfolioAttributes {
 }
 
 @Table({ tableName: "portfolio", timestamps: false })
-export class Portfolio
-  extends Model<portfolioAttributes, portfolioAttributes>
-  implements portfolioAttributes
-{
+export class Portfolio extends Model<portfolioAttributes, portfolioAttributes> implements portfolioAttributes {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
   @Index({ name: "PRIMARY", using: "BTREE", order: "ASC", unique: true })
   portfolio_id?: number;
@@ -51,7 +38,7 @@ export class Portfolio
   @Column({ allowNull: true, type: DataType.DATE })
   create_dt?: Date;
 
-  @Column({ allowNull: true, type: DataType.STRING(20) })
+  @Column({ allowNull: true, type: DataType.STRING(200) })
   title?: string;
 
   @Column({ allowNull: true, type: DataType.STRING(255) })
