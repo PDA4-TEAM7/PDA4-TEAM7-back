@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
 import { fetchKospiData, fetchKosdaqData } from "./scheduler/updateStockData";
 import cron from "node-cron";
+
 import * as dotenv from "dotenv";
 dotenv.config();
 const app = express();
