@@ -72,7 +72,13 @@ export const createPortfolio = async (req: Request, res: Response) => {
     const account = await Account.findByPk(account_id);
 
     if (!account) {
-      return res.status(404).json({ message: "No account found for this user." });
+      return res.status(404).json({ message: "유저의 계좌 정보가 존재하지 않습니다." });
+    }
+
+    // 해당 계정에 이미 포트폴리오가 있는지 확인
+    const existingPortfolio = await Portfolio.findOne({ where: { account_id: account.account_id } });
+    if (existingPortfolio) {
+      return res.status(409).json({ message: "이미 등록된 포트폴리오 정보 입니다." });
     }
 
     const kstNow = getKSTNow();
@@ -90,7 +96,7 @@ export const createPortfolio = async (req: Request, res: Response) => {
 
     res.status(201).json(newPortfolio);
   } catch (error) {
-    console.error("Error creating portfolio:", error);
-    res.status(500).send("Error creating portfolio");
+    console.error("포트폴리오 생성 오류", error);
+    res.status(500).send("포트폴리오 생성 오류");
   }
 };
