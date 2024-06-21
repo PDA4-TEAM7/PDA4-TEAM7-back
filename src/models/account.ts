@@ -22,16 +22,13 @@ export interface accountAttributes {
   account_number?: string;
   access_token?: string;
   access_token_valid_dt?: Date;
-  pchs_amt_smtl_amt?: number;
-  evlu_amt_smtl_amt?: number;
-  evlu_pfls_smtl_amt?: number;
+  pchs_amt_smtl_amt?: string;
+  evlu_amt_smtl_amt?: string;
+  evlu_pfls_smtl_amt?: string;
 }
 
 @Table({ tableName: "account", timestamps: false })
-export class Account
-  extends Model<accountAttributes, accountAttributes>
-  implements accountAttributes
-{
+export class Account extends Model<accountAttributes, accountAttributes> implements accountAttributes {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
   @Index({ name: "PRIMARY", using: "BTREE", order: "ASC", unique: true })
   account_id?: number;
@@ -56,17 +53,17 @@ export class Account
   @Column({ allowNull: true, type: DataType.STRING(255) })
   account_number?: string;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
+  @Column({ allowNull: true, type: DataType.STRING(30) })
   // 매입금액합계금액
-  pchs_amt_smtl_amt?: number;
+  pchs_amt_smtl_amt?: string;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
+  @Column({ allowNull: true, type: DataType.STRING(30) })
   // 평가금액합계금액
-  evlu_amt_smtl_amt?: number;
+  evlu_amt_smtl_amt?: string;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
+  @Column({ allowNull: true, type: DataType.STRING(30) })
   // 평가손익합계금액
-  evlu_pfls_smtl_amt?: number;
+  evlu_pfls_smtl_amt?: string;
 
   @BelongsTo(() => User)
   user!: User;
