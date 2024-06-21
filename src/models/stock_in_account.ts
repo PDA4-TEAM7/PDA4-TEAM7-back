@@ -17,15 +17,15 @@ export interface stock_in_accountAttributes {
   account_id?: number;
   stock_id?: number;
   market_id?: number;
-  quantity?: number;
+  hldg_qty?: string;
   // 매입 금액
-  pchs_amt?: number;
+  pchs_amt?: string;
   // 평가 금액
-  evlu_amt?: number;
+  evlu_amt?: string;
   // 평가 손익 금액
-  evlu_pfls_amt?: number;
+  evlu_pfls_amt?: string;
   // 손익률
-  evlu_pfls_rt?: number;
+  evlu_pfls_rt?: string;
 }
 
 @Table({ tableName: "stock_in_account", timestamps: false })
@@ -52,20 +52,20 @@ export class Stock_in_account
   @Column({ allowNull: true, type: DataType.BIGINT })
   market_id?: number;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
-  quantity?: number;
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  hldg_qty?: string;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
-  pchs_amt?: number;
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  pchs_amt?: string;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
-  evlu_amt?: number;
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  evlu_amt?: string;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
-  evlu_pfls_amt?: number;
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  evlu_pfls_amt?: string;
 
-  @Column({ allowNull: true, type: DataType.DECIMAL(10, 4) })
-  evlu_pfls_rt?: number;
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  evlu_pfls_rt?: string;
 
   @BelongsTo(() => Account)
   account!: Account;
