@@ -27,7 +27,7 @@ export const stockJoin = async (req: Request, res: Response) => {
     });
     res.json(stockJoin);
   } catch (error) {
-    console.error("Error fetching stock account:", error);
-    res.status(500).send("Error fetching stock account");
+    console.error("해당 주식의 이름, 표준산업 코드명과 계좌 정보를 가져올 수 없습니다.:", error);
+    res.status(500).send("해당 주식의 이름, 표준산업 코드명과 계좌 정보를 가져올 수 없습니다.");
   }
 };
