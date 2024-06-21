@@ -3,10 +3,11 @@ import { Stock_in_account } from "../models/stock_in_account"; // 모델 파일 
 import { Request, Response } from "express";
 
 export const stockAccount = async (req: Request, res: Response) => {
-  const { title } = req.body;
+  const { account_id } = req.body;
 
   try {
     const stockAccount = await Stock_in_account.findAll({
+      where: { account_id: account_id },
       attributes: [
         "holdings_id",
         "account_id",
