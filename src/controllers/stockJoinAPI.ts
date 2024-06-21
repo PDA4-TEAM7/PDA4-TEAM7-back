@@ -18,7 +18,7 @@ export const stockJoin = async (req: Request, res: Response) => {
         "account_id",
         "stock_id",
         "market_id",
-        "quantity",
+        "hldg_qty",
         "pchs_amt",
         "evlu_amt",
         "evlu_pfls_amt",
