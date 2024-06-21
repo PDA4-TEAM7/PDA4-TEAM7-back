@@ -11,6 +11,7 @@ import auth from "./auth";
 import user from "./user";
 import portfolio from "./portfolio";
 import backtest from "./backtest";
+import tradinghistory from "./tradinghistory";
 const router = express.Router();
 
 export default (): express.Router => {
@@ -26,6 +27,7 @@ export default (): express.Router => {
   user(router);
   portfolio(router);
   backtest(router);
+  tradinghistory(router);
   return router;
 };
 ////하나로 묶어준뒤 경로에 따라서 요청이 나감.
