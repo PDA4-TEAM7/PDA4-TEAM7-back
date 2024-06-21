@@ -5,6 +5,7 @@ import { HantuTokenApi, IAccessRes } from "../services/apis/hantuTokenAPI";
 import { IStock, StockAccountApi } from "../services/apis/stockAccountAPI";
 import { Stock_in_account } from "../models/stock_in_account";
 import { Stock, stockAttributes } from "../models/stock";
+import { Trading_history } from "../models/trading_history";
 
 //내 계정 추가
 export const setAccount = async (req: Request, res: Response) => {
@@ -44,12 +45,23 @@ export const setAccount = async (req: Request, res: Response) => {
         account_id: newAccount.account_id,
         stock_id: st.stock_id,
         market_id: 1,
-        quantity: data.hldg_qty,
+        hldg_qty: data.hldg_qty,
         pchs_amt: data.pchs_amt,
         evlu_amt: data.evlu_amt,
         evlu_pfls_amt: data.evlu_pfls_amt,
       });
     }
+    const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(accountNo);
+    // 거래내역 추가 account_id에 계좌 식별 값,
+    // const tradingHistory = Trading_history.create({
+    //   account_id:  newAccount.account_id,
+    //   stock_id: number;
+    //   sll_buy_dvsn_cd: string;
+    //   trade_dt: Date;
+    //   tot_ccld_qty: number;
+    //   tot_ccld_amt: number;
+    // })
+
     const accountStocks = await Stock_in_account.findAll({
       where: { account_id: newAccount.account_id },
     });
@@ -60,6 +72,29 @@ export const setAccount = async (req: Request, res: Response) => {
     console.log("account make error", error);
     return res.sendStatus(401);
   }
+};
+//거래내역 조회
+export const getTradingHistory = async (req: Request, res: Response) => {
+  const { accountId } = req.params;
+  const account = await Account.findOne({ where: { account_id: accountId } });
+  if (!account) {
+    console.log("계좌 못찾음");
+    return res.sendStatus(400);
+  }
+  //TODO: 토큰 만료됐을때 새로 발급받는 로직 추가해야함
+
+  const stockAccountApi = new StockAccountApi(account.app_key, account.app_secret, account.access_token);
+  const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(account.account_number || "");
+  // 거래내역 추가 account_id에 계좌 식별 값,
+  // const tradingHistory = Trading_history.create({
+  //   account_id:  newAccount.account_id,
+  //   stock_id: number;
+  //   sll_buy_dvsn_cd: string;
+  //   trade_dt: Date;
+  //   tot_ccld_qty: number;
+  //   tot_ccld_amt: number;
+  // })
+  res.json(inquireTradingHistory);
 };
 // accountId로 특정 계정 조회
 export const getAccount = async (req: Request, res: Response) => {

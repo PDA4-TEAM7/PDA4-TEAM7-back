@@ -65,7 +65,31 @@ export class StockAccountApi extends HantuBaseApi {
     const resp = await this.fetcher.get(
       `/uapi/domestic-stock/v1/trading/inquire-balance?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&AFHR_FLPR_YN=N&OFL_YN=N&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01&CTX_AREA_FK100=&CTX_AREA_NK100=`
     );
-
+    console.log("trading : ", resp);
     return resp.data;
+  }
+
+  // cano : 계좌번호
+  async inquireDailyCCLD(cano: string) {
+    let CTX_AREA_FK100 = ""; //최초시 공란, 그 이후 데이터는 이전 조회 Ouput의 CTX_AREA_FK100 값
+    let CTX_AREA_NK100 = ""; //최초시 공란, 그 이후 데이터는 이전 조회 Ouput의 CTX_AREA_NK100 값
+    const INQR_STRT_DT = "20240621"; // 조회 시작날짜
+    const INQR_END_DT = "20240621"; // 조회 종료날짜
+    const SLL_BUY_DVSN_CD = "01"; //매수매도 구분 00전체 01매도 02매수
+    const INQR_DVSN = "01"; //조회구분 00역순 01정순
+    const INQR_DVSN_3 = "00"; //00전체 01 현금
+    const resp = await this.fetcher.get(
+      `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${CTX_AREA_NK100}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`
+    );
+    console.log("거래내역 : ", resp.data.output1);
+    console.log("거래갯수:", resp.data.output1.length);
+    CTX_AREA_FK100 = resp.data.ctx_area_fk100;
+    CTX_AREA_FK100 = resp.data.ctx_area_nk100;
+    const resp2 = await this.fetcher.get(
+      `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${CTX_AREA_NK100}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`
+    );
+    console.log("거래내역2 : ", resp2.data.output1);
+    console.log("거래갯수2:", resp2.data.output1.length);
+    return resp2.data;
   }
 }

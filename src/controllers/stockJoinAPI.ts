@@ -3,10 +3,11 @@ import { Stock_in_account } from "../models/stock_in_account"; // 모델 파일 
 import { Stock } from "../models/stock"; // 모델 파일 경로에 맞게 수정
 import { Request, Response } from "express";
 export const stockJoin = async (req: Request, res: Response) => {
-  const { title } = req.body;
+  const { account_id } = req.body;
 
   try {
     const stockJoin = await Stock_in_account.findAll({
+      where: { account_id: account_id },
       include: [
         {
           model: Stock,

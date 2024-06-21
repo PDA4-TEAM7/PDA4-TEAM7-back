@@ -1,14 +1,4 @@
-import {
-  Model,
-  Table,
-  Column,
-  DataType,
-  Index,
-  Sequelize,
-  ForeignKey,
-  BelongsTo,
-  AllowNull,
-} from "sequelize-typescript";
+import { Model, Table, Column, DataType, Index, ForeignKey, BelongsTo } from "sequelize-typescript";
 import { Account } from "./account";
 import { Market } from "./market";
 import { Stock } from "./stock";
