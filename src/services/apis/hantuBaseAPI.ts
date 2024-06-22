@@ -16,7 +16,6 @@ export class HantuBaseApi {
         authorization: `Bearer ${accessToken}`,
         appkey: appkey, //DUMMY:  db에서 받아와 유저별로 설정해 줘야 하는 키
         appsecret: secretAppKey, //DUMMY:  db
-        tr_id: HANTU_TR_ID_M,
       },
     });
   }
