@@ -6,6 +6,7 @@ import { IStock, StockAccountApi } from "../services/apis/stockAccountAPI";
 import { Stock_in_account } from "../models/stock_in_account";
 import { Stock, stockAttributes } from "../models/stock";
 import { Trading_history } from "../models/trading_history";
+import { setDateByOrd } from "../utils/time";
 
 //내 계정 추가
 export const setAccount = async (req: Request, res: Response) => {
@@ -55,15 +56,20 @@ export const setAccount = async (req: Request, res: Response) => {
     newAccount.evlu_amt_smtl_amt = acountAsset.evlu_amt_smtl_amt; //평가금액합계금액
     newAccount.evlu_pfls_smtl_amt = acountAsset.evlu_amt_smtl_amt; //평가손익합계금액
     //TODO: 7.거래 내역 추가하기 account_id에 계좌 식별 값,
-    // const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(accountNo);
-    // const tradingHistory = Trading_history.create({
-    //   account_id:  newAccount.account_id,
-    //   stock_id: number;
-    //   sll_buy_dvsn_cd: string;
-    //   trade_dt: Date;
-    //   tot_ccld_qty: number;
-    //   tot_ccld_amt: number;
-    // })
+    const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(accountNo);
+    for (let data of inquireTradingHistory) {
+      let st = await Stock.findOne({ where: { code: data.pdno } });
+      if (!st) throw Error(`없는 주식번호입니다. 어째서? pdno: ${data.pdno}`);
+
+      const tradingHistory = Trading_history.create({
+        account_id: newAccount.account_id,
+        stock_id: st.stock_id,
+        sll_buy_dvsn_cd: data.sll_buy_dvsn_cd, //매도 01 매수 02
+        trade_dt: setDateByOrd(data.ord_dt, data.ord_tmd), //"ord_dt": "20240618", ord_tmd:105619
+        tot_ccld_qty: data.tot_ccld_qty, //주식수
+        tot_ccld_amt: data.tot_ccld_amt, //금액
+      });
+    }
 
     const accountStocks = await Stock_in_account.findAll({
       where: { account_id: newAccount.account_id },
