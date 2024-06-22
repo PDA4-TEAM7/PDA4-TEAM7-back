@@ -10,18 +10,16 @@ import { Trading_history } from "../models/trading_history";
 //내 계정 추가
 export const setAccount = async (req: Request, res: Response) => {
   try {
-    //accountNo는 8자리 숫자
-    const { accountNo, appkey, appsecretkey } = req.body;
+    const { accountNo, appkey, appsecretkey } = req.body; //accountNo는 8자리 숫자
     const { uid } = (req as any).user;
-    //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    //user가져오기.
     const user = await User.findByPk(uid);
     if (!user) throw Error;
-    console.log("userID ", user.user_id);
+
     //1. 해당 appkey로 토큰 발급받기.
     const tokenApi = new HantuTokenApi();
     const accessRes: IAccessRes = await tokenApi.getToken(appkey, appsecretkey);
-    //3. 발급된 토큰으로 account 생성.
+    if (!accessRes) throw Error("fail to get access Token. check key value");
+    //2. 발급된 토큰으로 account 생성.
     const accessToken = accessRes.access_token;
     const newAccount = await Account.create({
       uid: user?.uid,
@@ -36,12 +34,12 @@ export const setAccount = async (req: Request, res: Response) => {
     const stockAccountApi = new StockAccountApi(appkey, appsecretkey, accessToken);
     const inquirePriceRes = await stockAccountApi.inquireBalance(accountNo);
     const stocks: IStock[] = inquirePriceRes.output1;
-    //5-0. 없는 종목 stock테이블에 추가.
+
+    //5. output1의 값으로 stock_in_account 추가
     for (let data of stocks) {
       let st = await Stock.findOne({ where: { code: data.pdno } });
       if (!st) throw Error(`없는 주식번호입니다. 어째서? pdno: ${data.pdno}`);
-      //5. output1의 값으로 stock_in_account 추가
-      const newStockInAccount = await Stock_in_account.create({
+      await Stock_in_account.create({
         account_id: newAccount.account_id,
         stock_id: st.stock_id,
         market_id: 1,
@@ -51,8 +49,13 @@ export const setAccount = async (req: Request, res: Response) => {
         evlu_pfls_amt: data.evlu_pfls_amt,
       });
     }
-    const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(accountNo);
-    // 거래내역 추가 account_id에 계좌 식별 값,
+    const acountAsset = inquirePriceRes.output2;
+    //6. output2로 평가금액합계, 등 정보 추가
+    newAccount.pchs_amt_smtl_amt = acountAsset.pchs_amt_smtl_amt; //매입금액합계금액
+    newAccount.evlu_amt_smtl_amt = acountAsset.evlu_amt_smtl_amt; //평가금액합계금액
+    newAccount.evlu_pfls_smtl_amt = acountAsset.evlu_amt_smtl_amt; //평가손익합계금액
+    //TODO: 7.거래 내역 추가하기 account_id에 계좌 식별 값,
+    // const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(accountNo);
     // const tradingHistory = Trading_history.create({
     //   account_id:  newAccount.account_id,
     //   stock_id: number;
@@ -65,7 +68,6 @@ export const setAccount = async (req: Request, res: Response) => {
     const accountStocks = await Stock_in_account.findAll({
       where: { account_id: newAccount.account_id },
     });
-    //6. output2로 평가금액합계, 등 정보 추가
     return res.status(200).json({ message: "Hello make account", newAccount, accountStocks });
   } catch (error) {
     //2. 토큰 발급안되면 잘못된키.실패 내보내기.
