@@ -6,7 +6,7 @@ import {
   updatePortfolio,
   getPortfolioByAccountId,
   getAllPortfolios,
-} from "../controllers/portFolioAPI";
+} from "../controllers/portfolioAPI";
 import requireAuthMiddleware from "../middleware/requireAuthMiddleware";
 
 export default (router: express.Router) => {
