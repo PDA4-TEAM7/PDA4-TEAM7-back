@@ -6,11 +6,11 @@ import {
   updatePortfolio,
   getPortfolioByAccountId,
   getAllPortfolios,
-} from "../controllers/portfolioAPI";
+} from "../controllers/portFolioAPI";
 import requireAuthMiddleware from "../middleware/requireAuthMiddleware";
 
 export default (router: express.Router) => {
-  router.post("/portFolio", portfolio);
+  router.post("/portfolio", portfolio);
 
   //portfolio id를 통해서 작성자 찾기
   router.get("/portfolio/user/:portfolioId", getPortfolioOwner);
