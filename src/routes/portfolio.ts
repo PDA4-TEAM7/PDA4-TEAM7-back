@@ -5,6 +5,7 @@ import {
   createPortfolio,
   updatePortfolio,
   getPortfolioByAccountId,
+  getAllPortfolios,
 } from "../controllers/portfolioAPI";
 import requireAuthMiddleware from "../middleware/requireAuthMiddleware";
 
@@ -16,4 +17,5 @@ export default (router: express.Router) => {
   router.post("/portfolio/add", requireAuthMiddleware, createPortfolio);
   router.patch("/portfolio/:account_id", requireAuthMiddleware, updatePortfolio);
   router.get("/portfolio/account/:accountId", requireAuthMiddleware, getPortfolioByAccountId);
+  router.get("/portfolios", getAllPortfolios);
 };

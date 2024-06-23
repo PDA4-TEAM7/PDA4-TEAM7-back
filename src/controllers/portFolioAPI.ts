@@ -3,6 +3,8 @@ import { Account } from "../models/account";
 import { User } from "../models/user";
 import { Request, Response } from "express";
 import { getKSTNow } from "../utils/time";
+import { Stock_in_account } from "../models/stock_in_account";
+import { Stock } from "../models/stock";
 
 export const portfolio = async (req: Request, res: Response) => {
   try {
@@ -98,5 +100,92 @@ export const createPortfolio = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("포트폴리오 생성 오류", error);
     res.status(500).send("포트폴리오 생성 오류");
+  }
+};
+
+export const updatePortfolio = async (req: Request, res: Response) => {
+  try {
+    const { account_id } = req.params;
+    const { published } = req.body;
+
+    const portfolio = await Portfolio.findOne({ where: { account_id } });
+
+    if (!portfolio) {
+      return res.status(404).json({ message: "포트폴리오가 존재하지않습니다." });
+    }
+
+    portfolio.published = published;
+    await portfolio.save();
+
+    res.status(200).json({ message: "게시가 취소되었습니다." });
+  } catch (error) {
+    console.error("에러 : ", error);
+    res.status(500).json({ message: "서버 에러입니다." });
+  }
+};
+
+export const getPortfolioByAccountId = async (req: Request, res: Response) => {
+  const { accountId } = req.params;
+
+  try {
+    const portfolio = await Portfolio.findOne({ where: { account_id: accountId } });
+
+    if (!portfolio) {
+      return res.status(404).json({ message: "포트폴리오가 존재하지 않습니다." });
+    }
+
+    res.status(200).json(portfolio);
+  } catch (error) {
+    console.error("Error fetching portfolio by account ID:", error);
+    res.status(500).json({ message: "서버 에러입니다." });
+  }
+};
+
+export const getAllPortfolios = async (req: Request, res: Response) => {
+  try {
+    const portfolios = await Portfolio.findAll({
+      include: [
+        {
+          model: Account,
+          include: [User],
+        },
+      ],
+    });
+
+    const portfolioList = await Promise.all(
+      portfolios.map(async (portfolio) => {
+        const account = portfolio.account;
+        const stocksInAccount = await Stock_in_account.findAll({ where: { account_id: account.account_id } });
+
+        const totalQuantity = stocksInAccount.reduce((sum, stock) => sum + parseFloat(stock.hldg_qty || "0"), 0);
+        const stockData = await Promise.all(
+          stocksInAccount.map(async (stock) => {
+            const stockInfo = await Stock.findOne({ where: { stock_id: stock.stock_id } });
+            return {
+              name: stockInfo?.name,
+              ratio: parseFloat(stock.hldg_qty || "0") / totalQuantity,
+            };
+          })
+        );
+
+        return {
+          id: portfolio.portfolio_id,
+          title: portfolio.title,
+          description: portfolio.description,
+          createDate: portfolio.create_dt,
+          username: account.user.username,
+          totalAsset: parseFloat(account.evlu_amt_smtl_amt || "0"),
+          profitLoss:
+            (parseFloat(account.evlu_pfls_smtl_amt || "0") / parseFloat(account.pchs_amt_smtl_amt || "1")) * 100,
+          loss: parseFloat(account.evlu_pfls_smtl_amt || "0"),
+          stockData,
+        };
+      })
+    );
+
+    res.json(portfolioList);
+  } catch (error) {
+    console.error("Error fetching portfolio list:", error);
+    res.status(500).send("Error fetching portfolio list");
   }
 };
