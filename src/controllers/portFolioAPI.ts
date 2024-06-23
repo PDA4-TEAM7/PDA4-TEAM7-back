@@ -144,6 +144,7 @@ export const getPortfolioByAccountId = async (req: Request, res: Response) => {
 export const getAllPortfolios = async (req: Request, res: Response) => {
   try {
     const portfolios = await Portfolio.findAll({
+      where: { published: true },
       include: [
         {
           model: Account,
