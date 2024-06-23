@@ -117,7 +117,7 @@ def get_ratio(names, prices, ratios):
 #월말 데이터 추출(왜 인지 resample을 'M'말고 'ME'로 잡으라고 나옴)
 def get_month_end_data(df):
     df.index = pd.to_datetime(df.index)
-    return df.resample('M').last()
+    return df.resample('ME').last()
 
 #df와 무위험 이자율 데이터로 샤프비율,표준편차(std),연간 수익률 계산
 def calculate_sharpe_ratio_and_std(df, risk_free_rate=0.03):
