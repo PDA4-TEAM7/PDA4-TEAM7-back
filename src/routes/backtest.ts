@@ -8,7 +8,7 @@ export default (router: Router) => {
     console.log(`Sending data to Python script: ${data}`); // 로그 추가
 
     const scriptPath = path.join(__dirname, "../services/apis/stock_backtest.py");
-    const pythonProcess = spawn("python", [scriptPath]);
+    const pythonProcess = spawn("python3", [scriptPath]);
 
     let resultString = "";
 
