@@ -10,15 +10,15 @@ import numpy as np
 
 #주식 종목 코드(code)에 대해서 최초 상장일(origintime)을 가져옴 , 언제부터 백테스팅 돌릴지 체크
 #네이버 금융 주식 데이터 사용
+pattern = r'origintime="(\d+)"'
+
 def get_stock_origintime(code):
     try:
         url = "https://fchart.stock.naver.com/sise.nhn?symbol={}&timeframe=day&count=1&requestType=0".format(code)
         html = requests.get(url).text
-        soup = BeautifulSoup(html, "xml")
-        origintime = soup.select_one("chartdata")['origintime']
-        return origintime
-    except Exception:
-        raise ValueError(f"Stock code {code} not found")
+        return re.search(pattern, html).group(1)
+    except Exception as e:
+        raise ValueError(f"Stock code {code} not found url :{url}")
 
 #주식 종목 코드(code), 시작일, 종료일에 대해서 주식 data를 가져옴
 #네이버 금융 주식 데이터 사용
@@ -117,7 +117,7 @@ def get_ratio(names, prices, ratios):
 #월말 데이터 추출(왜 인지 resample을 'M'말고 'ME'로 잡으라고 나옴)
 def get_month_end_data(df):
     df.index = pd.to_datetime(df.index)
-    return df.resample('ME').last()
+    return df.resample('M').last()
 
 #df와 무위험 이자율 데이터로 샤프비율,표준편차(std),연간 수익률 계산
 def calculate_sharpe_ratio_and_std(df, risk_free_rate=0.03):
