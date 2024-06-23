@@ -6,7 +6,7 @@ export interface trading_historyAttributes {
   trading_id?: number;
   account_id?: number;
   stock_id?: number;
-  sll_buy_dvsn_cd?: string;
+  sll_buy_dvsn_cd?: string; //01: 매도 02:매수
   trade_dt?: Date;
   tot_ccld_qty?: string;
   tot_ccld_amt?: string;

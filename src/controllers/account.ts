@@ -51,10 +51,21 @@ export const setAccount = async (req: Request, res: Response) => {
       });
     }
     const acountAsset = inquirePriceRes.output2;
+    console.log("account ASset1 : ", acountAsset[0].pchs_amt_smtl_amt);
+    console.log("account ASset2 : ", acountAsset[0].evlu_amt_smtl_amt);
+    console.log("account ASset3 : ", acountAsset[0].evlu_pfls_smtl_amt);
     //6. output2로 평가금액합계, 등 정보 추가
-    newAccount.pchs_amt_smtl_amt = acountAsset.pchs_amt_smtl_amt; //매입금액합계금액
-    newAccount.evlu_amt_smtl_amt = acountAsset.evlu_amt_smtl_amt; //평가금액합계금액
-    newAccount.evlu_pfls_smtl_amt = acountAsset.evlu_amt_smtl_amt; //평가손익합계금액
+    const thisAccount = await Account.findByPk(newAccount.account_id);
+    if (!thisAccount) {
+      console.error(`Account with ID ${newAccount.account_id} not found.`);
+      return;
+    }
+    console.log("account : ", thisAccount);
+    thisAccount.pchs_amt_smtl_amt = acountAsset[0].pchs_amt_smtl_amt; //매입금액합계금액
+    thisAccount.evlu_amt_smtl_amt = acountAsset[0].evlu_amt_smtl_amt; //평가금액합계금액
+    thisAccount.evlu_pfls_smtl_amt = acountAsset[0].evlu_pfls_smtl_amt; //평가손익합계금액
+    await thisAccount.save();
+
     //TODO: 7.거래 내역 추가하기 account_id에 계좌 식별 값,
     const inquireTradingHistory = await stockAccountApi.inquireDailyCCLD(accountNo);
     for (let data of inquireTradingHistory) {
