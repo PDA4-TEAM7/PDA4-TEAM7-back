@@ -7,6 +7,6 @@ export default (router: express.Router) => {
   router.post("/account", requireAuthMiddleware, setAccount);
   router.get("/account/:accountId", getAccount);
   router.get("/accountlist", getMyAccountList);
-  router.delete("/account/:accountId", deleteAccount);
+  router.delete("/account/:accountId", requireAuthMiddleware, deleteAccount);
   router.get("/account/trading/:accountId", getTradingHistory);
 };

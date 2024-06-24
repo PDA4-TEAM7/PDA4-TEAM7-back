@@ -7,6 +7,7 @@ import { Stock_in_account } from "../models/stock_in_account";
 import { Stock, stockAttributes } from "../models/stock";
 import { Trading_history } from "../models/trading_history";
 import { setDateByOrd } from "../utils/time";
+import { Portfolio } from "../models/portfolio";
 
 //내 계정 추가
 export const setAccount = async (req: Request, res: Response) => {
@@ -147,11 +148,26 @@ export const getMyAccountList = async (req: Request, res: Response) => {
 //내 계정 제거
 export const deleteAccount = async (req: Request, res: Response) => {
   try {
-    const { account, appkey, appsecretkey, uid } = req.body;
-    //TODO: account 추가하기. appkey, appsecretkey로 access 토큰 생성(한투API)해서 account테이블에 추가.
-    return res.status(200).json({ message: "Hello make account", uid, account });
+    const { accountId } = req.params;
+    // account_id로 생성한 포트폴리오가 있는지 확인하고, published 상태 확인
+    const portfolio = await Portfolio.findOne({
+      where: { account_id: accountId },
+    });
+
+    // 포트폴리오가 존재하지 않거나 published가 0인 경우 삭제 가능
+    if (!portfolio || portfolio.published === false) {
+      const deleted = await Account.destroy({ where: { account_id: accountId } });
+      if (deleted) {
+        return res.status(200).json({ message: "성공적으로 계좌가 삭제되었습니다." });
+      } else {
+        return res.status(404).json({ message: "삭제할 계좌를 찾을 수 없습니다." });
+      }
+    } else {
+      // 포트폴리오가 존재하고 published가 0이 아니면 삭제 불가
+      return res.status(400).json({ message: "계좌에 연결된 포트폴리오가 있어 삭제할 수 없습니다." });
+    }
   } catch (error) {
-    console.log("account make error", error);
-    return res.sendStatus(401);
+    console.error("계좌 삭제 중 오류가 발생했습니다.", error);
+    return res.sendStatus(500); // 내부 서버 오류
   }
 };
