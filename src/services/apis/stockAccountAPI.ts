@@ -79,30 +79,36 @@ export class StockAccountApi extends HantuBaseApi {
     const SLL_BUY_DVSN_CD = "00"; //매수매도 구분 00전체 01매도 02매수
     const INQR_DVSN = "00"; //조회구분 00역순 01정순
     const INQR_DVSN_3 = "00"; //00전체 01 현금
+
     let maxCnt = 10;
     let cnt = 0;
     let tradingDatas: any[] = [];
-    getTranding(CTX_AREA_NK100, this.fetcher);
-    async function getTranding(nk: string, fetcher: any) {
-      const resp = await fetcher.get(
-        `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${nk}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`,
-        { headers: { tr_id: HANTU_TR_ID_M_TRADING } }
-      );
-      console.log("거래내역 : ", resp.data.output1);
-      console.log("거래output2:", resp.data.output2);
-      console.log("message : ", resp.data.msg1);
-      console.log("nk : ", resp.data.ctx_area_nk100);
-      CTX_AREA_FK100 = resp.data.ctx_area_fk100;
-      CTX_AREA_NK100 = resp.data.ctx_area_nk100;
-      cnt++;
-      tradingDatas = [...tradingDatas, ...resp.data.output1];
-      if (!CTX_AREA_NK100.trim()) {
-        console.log("종료:", CTX_AREA_NK100.trim());
-        return;
-      } else {
-        console.log("다음값: ", CTX_AREA_NK100.trim());
-        getTranding(CTX_AREA_NK100, fetcher);
+    try {
+      await getTranding(CTX_AREA_NK100, this.fetcher);
+      async function getTranding(nk: string, fetcher: any) {
+        const resp = await fetcher.get(
+          `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${nk}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`,
+          { headers: { tr_id: HANTU_TR_ID_M_TRADING } }
+        );
+        console.log("거래내역 : ", resp.data.output1);
+        console.log("거래output2:", resp.data.output2);
+        console.log("message : ", resp.data.msg1);
+        console.log("nk : ", resp.data.ctx_area_nk100);
+        CTX_AREA_FK100 = resp.data.ctx_area_fk100;
+        CTX_AREA_NK100 = resp.data.ctx_area_nk100;
+        cnt++;
+        tradingDatas = [...tradingDatas, ...resp.data.output1];
+        console.log(tradingDatas.length);
+        if (!CTX_AREA_NK100.trim()) {
+          console.log("종료:", CTX_AREA_NK100.trim());
+          return;
+        } else {
+          console.log("다음값: ", CTX_AREA_NK100.trim());
+          await getTranding(CTX_AREA_NK100, fetcher);
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
 
     return tradingDatas;
