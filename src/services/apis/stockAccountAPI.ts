@@ -98,7 +98,6 @@ export class StockAccountApi extends HantuBaseApi {
         CTX_AREA_NK100 = resp.data.ctx_area_nk100;
         cnt++;
         tradingDatas = [...tradingDatas, ...resp.data.output1];
-        console.log(tradingDatas.length);
         if (!CTX_AREA_NK100.trim()) {
           console.log("종료:", CTX_AREA_NK100.trim());
           return;
