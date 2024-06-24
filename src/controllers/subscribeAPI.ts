@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Sub_portfolio } from "../models/sub_portfolio";
 import { Portfolio } from "../models/portfolio";
+import { User } from "../models/user"; // Correct import
 
 export const subscribePortfolio = async (req: Request, res: Response) => {
   const { portfolio_id } = req.body;
@@ -11,11 +12,27 @@ export const subscribePortfolio = async (req: Request, res: Response) => {
   }
 
   try {
+    const user = await User.findByPk(uid);
+    const portfolio = await Portfolio.findByPk(portfolio_id);
+
+    if (!user || !portfolio) {
+      return res.status(404).json({ message: "User or Portfolio not found" });
+    }
+
+    const userCredit = user.credit ?? 0;
+    const portfolioPrice = portfolio.price ?? 0;
+
+    if (userCredit < portfolioPrice) {
+      return res.status(400).json({ message: "Insufficient credit" });
+    }
+
+    user.credit = userCredit - portfolioPrice;
+    await user.save();
+
     const today = new Date();
     const oneMonthLater = new Date();
     oneMonthLater.setMonth(today.getMonth() + 1);
 
-    // 기존 구독 정보 확인
     let subscription = await Sub_portfolio.findOne({ where: { portfolio_id, uid } });
 
     if (subscription) {
