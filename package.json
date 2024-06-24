@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/app.js",
-    "build": "tsc && cp src/services/apis/stock_backtest.py dist/services/apis/stock_backtest.py",
+    "build": "tsc",
     "dev": "ts-node-dev --respawn src/app.ts",
     "create:db": "ts-node ./src/migrations/create-db.ts"
   },
