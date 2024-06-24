@@ -22,7 +22,7 @@ export interface CurrentHoldingAttributes {
   tableName: "current_holding",
   timestamps: true,
 })
-export class CurrentHolding extends Model<CurrentHolding> {
+export class Current_holding extends Model<Current_holding, Current_holding> implements Current_holding {
   @PrimaryKey
   @Column({ type: DataType.BIGINT })
   holding_id!: number;
