@@ -11,7 +11,7 @@ export const stockJoin = async (req: Request, res: Response) => {
       include: [
         {
           model: Stock,
-          attributes: ["name", "std_idst_clsf_cd_name"],
+          attributes: ["name", "std_idst_clsf_cd_name", "code"],
         },
       ],
       attributes: [
