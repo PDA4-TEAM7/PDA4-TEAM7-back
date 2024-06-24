@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { Sub_portfolio } from "../models/sub_portfolio";
 import { Portfolio } from "../models/portfolio";
-import { User } from "../models/user"; // Correct import
+import { User } from "../models/user";
+import { Account } from "../models/account";
+import { Stock_in_account } from "../models/stock_in_account";
+import { Stock } from "../models/stock";
 
 export const subscribePortfolio = async (req: Request, res: Response) => {
   const { portfolio_id } = req.body;
@@ -92,11 +95,56 @@ export const getUserSubscriptions = async (req: Request, res: Response) => {
 
   try {
     const subscriptions = await Sub_portfolio.findAll({
-      where: { uid },
-      include: [Portfolio],
+      where: { uid, can_sub: true },
+      include: [
+        {
+          model: Portfolio,
+          include: [
+            {
+              model: Account,
+              include: [User],
+            },
+          ],
+        },
+      ],
     });
 
-    res.status(200).json(subscriptions);
+    const response = await Promise.all(
+      subscriptions.map(async (subscription) => {
+        const portfolio = subscription.portfolio;
+        const account = portfolio.account;
+        const user = account.user;
+        const stocksInAccount = await Stock_in_account.findAll({ where: { account_id: account.account_id } });
+
+        const totalQuantity = stocksInAccount.reduce((sum, stock) => sum + parseFloat(stock.hldg_qty || "0"), 0);
+        const stockData = await Promise.all(
+          stocksInAccount.map(async (stock) => {
+            const stockInfo = await Stock.findOne({ where: { stock_id: stock.stock_id } });
+            return {
+              name: stockInfo?.name,
+              ratio: parseFloat(stock.hldg_qty || "0") / totalQuantity,
+            };
+          })
+        );
+
+        return {
+          portfolio_id: portfolio.portfolio_id,
+          title: portfolio.title,
+          description: portfolio.description,
+          account_id: portfolio.account_id,
+          createDate: portfolio.create_dt,
+          username: user.username,
+          totalAsset: parseFloat(account.evlu_amt_smtl_amt || "0"),
+          profitLoss:
+            (parseFloat(account.evlu_pfls_smtl_amt || "0") / parseFloat(account.pchs_amt_smtl_amt || "1")) * 100,
+          loss: parseFloat(account.evlu_pfls_smtl_amt || "0"),
+          stockData,
+          ed_dt: subscription.ed_dt,
+        };
+      })
+    );
+
+    res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching subscriptions:", error);
     res.status(500).json({ message: "Error fetching subscriptions" });
