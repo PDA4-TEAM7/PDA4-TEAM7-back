@@ -171,6 +171,7 @@ export const getAllPortfolios = async (req: Request, res: Response) => {
 
         return {
           id: portfolio.portfolio_id,
+          account_id: portfolio.account_id,
           title: portfolio.title,
           description: portfolio.description,
           createDate: portfolio.create_dt,
