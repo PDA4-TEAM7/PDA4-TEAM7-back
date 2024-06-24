@@ -66,7 +66,7 @@ export class StockAccountApi extends HantuBaseApi {
       `/uapi/domestic-stock/v1/trading/inquire-balance?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&AFHR_FLPR_YN=N&OFL_YN=N&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01&CTX_AREA_FK100=&CTX_AREA_NK100=`,
       { headers: { tr_id: HANTU_TR_ID_M } }
     );
-    console.log("trading : ", resp);
+    console.log("inquire balance : ", resp.data);
     return resp.data;
   }
 
@@ -82,9 +82,10 @@ export class StockAccountApi extends HantuBaseApi {
     let maxCnt = 10;
     let cnt = 0;
     let tradingDatas: any[] = [];
-    while (cnt < maxCnt) {
-      const resp = await this.fetcher.get(
-        `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${CTX_AREA_NK100}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`,
+    getTranding(CTX_AREA_NK100, this.fetcher);
+    async function getTranding(nk: string, fetcher: any) {
+      const resp = await fetcher.get(
+        `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${nk}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`,
         { headers: { tr_id: HANTU_TR_ID_M_TRADING } }
       );
       console.log("거래내역 : ", resp.data.output1);
@@ -97,9 +98,10 @@ export class StockAccountApi extends HantuBaseApi {
       tradingDatas = [...tradingDatas, ...resp.data.output1];
       if (!CTX_AREA_NK100.trim()) {
         console.log("종료:", CTX_AREA_NK100.trim());
-        break;
+        return;
       } else {
         console.log("다음값: ", CTX_AREA_NK100.trim());
+        getTranding(CTX_AREA_NK100, fetcher);
       }
     }
 

@@ -35,11 +35,14 @@ export const setAccount = async (req: Request, res: Response) => {
     const stockAccountApi = new StockAccountApi(appkey, appsecretkey, accessToken);
     const inquirePriceRes = await stockAccountApi.inquireBalance(accountNo);
     const stocks: IStock[] = inquirePriceRes.output1;
-
+    console.log("output1 :", inquirePriceRes);
     //5. output1의 값으로 stock_in_account 추가
     for (let data of stocks) {
       let st = await Stock.findOne({ where: { code: data.pdno } });
-      if (!st) throw Error(`없는 주식번호입니다. 어째서? pdno: ${data.pdno}`);
+      if (!st) {
+        console.log("이게 데이터인데 주식 저장 가능해? ", data);
+        throw Error(`없는 주식번호입니다. 어째서? pdno: ${data.pdno}`);
+      }
       await Stock_in_account.create({
         account_id: newAccount.account_id,
         stock_id: st.stock_id,
