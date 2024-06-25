@@ -1,10 +1,19 @@
-import { Model, Table, Column, DataType, Index, Sequelize, ForeignKey, BelongsTo } from "sequelize-typescript";
+import {
+  Model,
+  Table,
+  Column,
+  DataType,
+  Index,
+  Sequelize,
+  ForeignKey,
+  BelongsTo,
+  AutoIncrement,
+} from "sequelize-typescript";
 import { Portfolio } from "./portfolio";
 import { Account } from "./account";
 import { User } from "./user";
 
-export interface current_historyAttributes {
-  trading_id: number;
+export interface RecencyHistoryAttributes {
   portfolio_id: number;
   account_id: number;
   uid?: number;
@@ -16,18 +25,18 @@ export interface current_historyAttributes {
   trade_dt?: Date;
 }
 
-@Table({ tableName: "current_history", timestamps: false })
-export class Current_history
-  extends Model<current_historyAttributes, current_historyAttributes>
-  implements current_historyAttributes
+@Table({ tableName: "recencyhistory", timestamps: true })
+export class RecencyHistory
+  extends Model<RecencyHistoryAttributes, RecencyHistoryAttributes>
+  implements RecencyHistoryAttributes
 {
-  @Column({ primaryKey: true, type: DataType.BIGINT })
+  @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
   @Index({ name: "PRIMARY", using: "BTREE", order: "ASC", unique: true })
   trading_id!: number;
 
   @ForeignKey(() => Portfolio)
   @Column({ type: DataType.BIGINT })
-  @Index({ name: "FK_portfolio_TO_current_history_1", using: "BTREE", order: "ASC", unique: false })
+  @Index({ name: "FK_portfolio_TO_recent_history_1", using: "BTREE", order: "ASC", unique: false })
   portfolio_id!: number;
 
   @ForeignKey(() => Account)

@@ -13,6 +13,7 @@ import portfolio from "./portfolio";
 import backtest from "./backtest";
 import tradinghistory from "./tradinghistory";
 import subscribe from "./subscribe";
+import recency from "./recency";
 const router = express.Router();
 
 export default (): express.Router => {
@@ -30,7 +31,7 @@ export default (): express.Router => {
   backtest(router);
   tradinghistory(router);
   subscribe(router);
-
+  recency(router);
   return router;
 };
 ////하나로 묶어준뒤 경로에 따라서 요청이 나감.
