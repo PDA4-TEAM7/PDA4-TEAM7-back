@@ -22,3 +22,10 @@ export const setDateByOrd = (ord_dt: string, ord_tmd: string): Date => {
 
   return dateTime;
 };
+
+export const formatYYMMDD = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고, 두 자리로 맞춤
+  const day = date.getDate().toString().padStart(2, "0"); // 일을 두 자리로 맞춤
+  return `${year}${month}${day}`;
+};
