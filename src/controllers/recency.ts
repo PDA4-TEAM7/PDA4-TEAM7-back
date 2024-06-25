@@ -23,8 +23,17 @@ export const getMySubRecencyTradingHistory = async (req: Request, res: Response)
   const { uid } = (req as any).user;
   try {
     const mySubRecencyTradingHistory = await recencyAPI.getMySubRecencyTradingHistory(uid);
-    console.log("mySubRecencyTradingHistory", mySubRecencyTradingHistory);
     res.status(200).json(mySubRecencyTradingHistory);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getStockInfoByAccountId = async (req: Request, res: Response) => {
+  const { accountId, name } = req.params;
+  try {
+    const stockInfo = await recencyAPI.getStockInfoByAccountId(Number(accountId), name);
+    res.status(200).json(stockInfo);
   } catch (error) {
     console.log(error);
   }
