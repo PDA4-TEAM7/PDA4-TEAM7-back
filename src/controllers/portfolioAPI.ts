@@ -51,6 +51,7 @@ export const getPortfolioOwner = async (req: Request, res: Response) => {
       uid: owner.uid,
       updateDate: portfolio.update_dt?.toISOString().split("T")[0] || "N/A",
       profileImage: "/img/soya_profile.png", // 프로필 이미지 하드코딩으로 고정 시켜 놓음.
+      introduce: owner.introduce,
     };
 
     res.status(200).json(ownerInfo);
@@ -141,6 +142,13 @@ export const getPortfolioByAccountId = async (req: Request, res: Response) => {
   }
 };
 
+export const getPortfolio = async (req: Request, res: Response) => {
+  const { portfolioId } = req.params;
+
+  const resp = await Portfolio.findByPk(portfolioId);
+  return res.json(resp);
+};
+
 export const getAllPortfolios = async (req: Request, res: Response) => {
   try {
     const portfolios = await Portfolio.findAll({
@@ -190,5 +198,49 @@ export const getAllPortfolios = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching portfolio list:", error);
     res.status(500).send("Error fetching portfolio list");
+  }
+};
+
+export const getPortfolioDetails = async (req: Request, res: Response) => {
+  const { accountId } = req.params;
+
+  try {
+    const portfolio = await Portfolio.findOne({
+      where: { account_id: accountId },
+      include: [{ model: Account, include: [User] }],
+    });
+
+    if (!portfolio) {
+      return res.status(404).json({ message: "해당 포트폴리오가 존재하지 않습니다." });
+    }
+
+    const owner = portfolio.account.user;
+
+    if (!owner) {
+      return res.status(404).json({ message: "포트폴리오의 작성자가 존재하지 않습니다." });
+    }
+
+    const portfolioDetails = {
+      title: portfolio.title,
+      description: portfolio.description,
+      updateDate: portfolio.update_dt?.toISOString().split("T")[0] || "N/A",
+      owner: {
+        name: owner.username,
+        uid: owner.uid,
+        profileImage: "/img/soya_profile.png", // 프로필 이미지 하드코딩으로 고정 시켜 놓음.
+        introduce: owner.introduce,
+      },
+    };
+
+    res.status(200).json(portfolioDetails);
+  } catch (error) {
+    console.error("Error fetching portfolio details:", error);
+
+    if (error instanceof Error) {
+      console.error("Detailed error:", error.message);
+      res.status(500).json({ message: "Server error", error: error.message });
+    } else {
+      res.status(500).json({ message: "Server error" });
+    }
   }
 };

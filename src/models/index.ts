@@ -13,6 +13,8 @@ import { Stock } from "./stock";
 import { Sub_portfolio } from "./sub_portfolio";
 import { Trading_history } from "./trading_history";
 import { Stock_history } from "./stock_history";
+import { RecencyHistory } from "./recencyhistory";
+import { RecencyHoldings } from "./recencyholding";
 
 export interface DB {
   sequelize: Sequelize;
@@ -41,6 +43,8 @@ sequelize.addModels([
   Sub_portfolio,
   Trading_history,
   Stock_history,
+  RecencyHistory,
+  RecencyHoldings,
 ]);
 
 export const initializeDatabase = async () => {

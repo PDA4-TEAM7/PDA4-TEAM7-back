@@ -26,6 +26,7 @@ export const setCharge = async (req: Request, res: Response) => {
   const { uid } = (req as any).user;
   const user = await User.findByPk(uid);
   if (!user) return res.sendStatus(400);
+
   user.credit = user.credit + req.body.addCredit;
   user.save();
   return res.status(200).json({ credit: user.credit });
