@@ -128,9 +128,9 @@ export class StockAccountApi extends HantuBaseApi {
     let CTX_AREA_FK100 = ""; //최초시 공란, 그 이후 데이터는 이전 조회 Ouput의 CTX_AREA_FK100 값
     let CTX_AREA_NK100 = ""; //최초시 공란, 그 이후 데이터는 이전 조회 Ouput의 CTX_AREA_NK100 값
     const currentDate = new Date();
-    const INQR_STRT_DT = formatYYMMDD(currentDate); // 조회 시작날짜
+    const INQR_END_DT = formatYYMMDD(currentDate); // 조회 시작날짜
     currentDate.setMonth(currentDate.getMonth() - 3);
-    const INQR_END_DT = formatYYMMDD(currentDate); // 조회 종료날짜
+    const INQR_STRT_DT = formatYYMMDD(currentDate); // 조회 종료날짜
     const SLL_BUY_DVSN_CD = "00"; //매수매도 구분 00전체 01매도 02매수
     const INQR_DVSN = "00"; //조회구분 00역순 01정순
     const INQR_DVSN_3 = "00"; //00전체 01 현금
@@ -146,6 +146,7 @@ export class StockAccountApi extends HantuBaseApi {
           `/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO=${cano}&ACNT_PRDT_CD=${ACNT_PRDT_CD}&INQR_STRT_DT=${INQR_STRT_DT}&INQR_END_DT=${INQR_END_DT}&SLL_BUY_DVSN_CD=${SLL_BUY_DVSN_CD}&INQR_DVSN=${INQR_DVSN}&PDNO=&CCLD_DVSN=${"01"}&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=${INQR_DVSN_3}&INQR_DVSN_1=&CTX_AREA_FK100=${CTX_AREA_FK100}&CTX_AREA_NK100=${nk}&AFHR_FLPR_YN=&OFL_YN=N&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=01`,
           { headers: { tr_id: HANTU_TR_ID_M_TRADING } }
         );
+        console.log("get Trading info:", resp);
         console.log("거래내역 : ", resp.data.output1);
         console.log("거래output2:", resp.data.output2);
         console.log("message : ", resp.data.msg1);
