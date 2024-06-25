@@ -150,3 +150,15 @@ export const getUserSubscriptions = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching subscriptions" });
   }
 };
+
+export const getSubscriberCount = async (req: Request, res: Response) => {
+  const portfolioId = req.params.portfolio_id;
+  const subscriberCount = await Sub_portfolio.count({
+    where: {
+      portfolio_id: portfolioId,
+      can_sub: 1,
+    },
+  });
+
+  res.status(200).json({ subscriberCount });
+};
