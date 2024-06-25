@@ -73,7 +73,7 @@ export const setAccount = async (req: Request, res: Response) => {
       // if (!st) throw Error(`없는 주식번호입니다. 어째서? pdno: ${data.pdno}`);
       if (!st) console.log(`생성한 테이블에는 존재하지 않는 주식번호입니다. pdno: ${data.pdno}`);
       if (st) {
-        const tradingHistory = Trading_history.create({
+        const tradingHistory = await Trading_history.create({
           account_id: newAccount.account_id,
           stock_id: st.stock_id,
           sll_buy_dvsn_cd: data.sll_buy_dvsn_cd, //매도 01 매수 02
