@@ -83,6 +83,7 @@ export class StockAccountApi extends HantuBaseApi {
     let maxCnt = 10;
     let cnt = 0;
     let tradingDatas: any[] = [];
+    //1. 데이터 연속적으로 조회
     try {
       await getTranding(CTX_AREA_NK100, this.fetcher);
       async function getTranding(nk: string, fetcher: any) {
@@ -98,6 +99,7 @@ export class StockAccountApi extends HantuBaseApi {
         CTX_AREA_NK100 = resp.data.ctx_area_nk100;
         cnt++;
         tradingDatas = [...tradingDatas, ...resp.data.output1];
+
         if (!CTX_AREA_NK100.trim()) {
           console.log("종료:", CTX_AREA_NK100.trim());
           return;
@@ -109,7 +111,36 @@ export class StockAccountApi extends HantuBaseApi {
     } catch (error) {
       console.log(error);
     }
+    function getTotalAmtAndQty(stockId: string, startIdx: number): { tot_amt: number; tot_qty: number } {
+      let tot_amt = 0;
+      let tot_qty = 0;
+      tradingDatas.forEach((data, idx) => {
+        if (idx <= startIdx || data.sll_buy_dvsn_cd === "01") return;
+        if (stockId == data.pdno) {
+          tot_amt += Number(data.tot_ccld_amt);
+          tot_qty += Number(data.tot_ccld_qty);
+        }
+      });
+      return { tot_amt, tot_qty };
+    }
+    //2. 매도(01)일 경우 손익율 손익금 값 저장하기
+    const addPflsTradingDatas = tradingDatas.map((data, idx) => {
+      if (data.sll_buy_dvsn_cd === "01") {
+        //idx 이후 나오는 sll_buy_dvsn_cd = '02', stock_id 가일치하는 데이터의 tot_ccld_amt와 tot_ccld_qty의 총 합 구하기
+        const { tot_amt, tot_qty } = getTotalAmtAndQty(data.pdno, idx); // idx이후 값의 해당 주식의 총 매수금액
+        const buy_avg = tot_amt / tot_qty; //매입평균가
+        const pfls_amt = +data.avg_prvs - buy_avg; //1주당 손익금
+        const evlu_pfls_amt = pfls_amt * +data.tot_ccld_qty; //총 손익금
+        const evlu_pfls_rt = (pfls_amt / buy_avg) * 100; //손익율
+        console.log(
+          `손익금 추가 데이터 : amt= ${evlu_pfls_amt}, pr=${evlu_pfls_rt}, 매입_tot_amt=${tot_amt},매입_tot_qty=${tot_qty}, buy_avg=${buy_avg}`
+        );
+        return { ...data, evlu_pfls_amt, evlu_pfls_rt };
+      } else {
+        return data;
+      }
+    });
 
-    return tradingDatas;
+    return addPflsTradingDatas;
   }
 }
