@@ -60,6 +60,12 @@ export interface IAccountInquireBalance {
     asst_icdc_erng_rt: string;
   };
 }
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // 월은 0부터 시작하므로 1을 더하고, 두 자리로 맞춤
+  const day = date.getDate().toString().padStart(2, "0"); // 일을 두 자리로 맞춤
+  return `${year}${month}${day}`;
+};
 export class StockAccountApi extends HantuBaseApi {
   async inquireBalance(cano: string) {
     const resp = await this.fetcher.get(
@@ -74,8 +80,10 @@ export class StockAccountApi extends HantuBaseApi {
   async inquireDailyCCLD(cano: string) {
     let CTX_AREA_FK100 = ""; //최초시 공란, 그 이후 데이터는 이전 조회 Ouput의 CTX_AREA_FK100 값
     let CTX_AREA_NK100 = ""; //최초시 공란, 그 이후 데이터는 이전 조회 Ouput의 CTX_AREA_NK100 값
-    const INQR_STRT_DT = "20240601"; // 조회 시작날짜
-    const INQR_END_DT = "20240621"; // 조회 종료날짜
+    const currentDate = new Date();
+    const INQR_STRT_DT = formatDate(currentDate); // 조회 시작날짜
+    currentDate.setMonth(currentDate.getMonth() - 3);
+    const INQR_END_DT = formatDate(currentDate); // 조회 종료날짜
     const SLL_BUY_DVSN_CD = "00"; //매수매도 구분 00전체 01매도 02매수
     const INQR_DVSN = "00"; //조회구분 00역순 01정순
     const INQR_DVSN_3 = "00"; //00전체 01 현금
@@ -83,6 +91,7 @@ export class StockAccountApi extends HantuBaseApi {
     let maxCnt = 10;
     let cnt = 0;
     let tradingDatas: any[] = [];
+
     try {
       await getTranding(CTX_AREA_NK100, this.fetcher);
       async function getTranding(nk: string, fetcher: any) {
