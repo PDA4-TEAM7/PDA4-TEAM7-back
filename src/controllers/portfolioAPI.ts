@@ -67,7 +67,7 @@ export const getPortfolioOwner = async (req: Request, res: Response) => {
   }
 };
 
-export const createPortfolio = async (req: Request, res: Response) => {
+export const createOrUpdatePortfolio = async (req: Request, res: Response) => {
   const { account_id, title, description, price, detailDescription } = req.body;
 
   try {
@@ -78,29 +78,49 @@ export const createPortfolio = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "유저의 계좌 정보가 존재하지 않습니다." });
     }
 
-    // 해당 계정에 이미 포트폴리오가 있는지 확인
-    const existingPortfolio = await Portfolio.findOne({ where: { account_id: account.account_id } });
+    // 동일한 계정에 published가 1인 포트폴리오가 있는지 확인
+    const existingPortfolio = await Portfolio.findOne({ where: { account_id: account.account_id, published: true } });
+
     if (existingPortfolio) {
       return res.status(409).json({ message: "이미 등록된 포트폴리오 정보 입니다." });
     }
 
-    const kstNow = getKSTNow();
-    // 포트폴리오 생성
-    const newPortfolio = await Portfolio.create({
-      account_id: account.account_id,
-      title,
-      description,
-      price,
-      detail_description: detailDescription,
-      update_dt: kstNow,
-      create_dt: kstNow,
-      published: true,
+    // 동일한 계정에 published가 0인 포트폴리오가 있는지 확인
+    const unpublishedPortfolio = await Portfolio.findOne({
+      where: { account_id: account.account_id, published: false },
     });
 
-    res.status(201).json(newPortfolio);
+    const kstNow = getKSTNow();
+
+    if (unpublishedPortfolio) {
+      // 기존 unpublished 포트폴리오를 업데이트
+      unpublishedPortfolio.title = title;
+      unpublishedPortfolio.description = description;
+      unpublishedPortfolio.price = price;
+      unpublishedPortfolio.detail_description = detailDescription;
+      unpublishedPortfolio.update_dt = kstNow;
+      unpublishedPortfolio.published = true;
+
+      await unpublishedPortfolio.save();
+      return res.status(200).json(unpublishedPortfolio);
+    } else {
+      // 새로운 포트폴리오 생성
+      const newPortfolio = await Portfolio.create({
+        account_id: account.account_id,
+        title,
+        description,
+        price,
+        detail_description: detailDescription,
+        update_dt: kstNow,
+        create_dt: kstNow,
+        published: true,
+      });
+
+      return res.status(201).json(newPortfolio);
+    }
   } catch (error) {
     console.error("포트폴리오 생성 오류", error);
-    res.status(500).send("포트폴리오 생성 오류");
+    return res.status(500).send("포트폴리오 생성 오류");
   }
 };
 
