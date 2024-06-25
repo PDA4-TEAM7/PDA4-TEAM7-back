@@ -74,12 +74,14 @@ export const setAccount = async (req: Request, res: Response) => {
       if (!st) console.log(`생성한 테이블에는 존재하지 않는 주식번호입니다. pdno: ${data.pdno}`);
       if (st) {
         const tradingHistory = await Trading_history.create({
-          account_id: newAccount.account_id,
+          account_id: thisAccount.account_id,
           stock_id: st.stock_id,
           sll_buy_dvsn_cd: data.sll_buy_dvsn_cd, //매도 01 매수 02
           trade_dt: setDateByOrd(data.ord_dt, data.ord_tmd), //"ord_dt": "20240618", ord_tmd:105619
           tot_ccld_qty: data.tot_ccld_qty, //주식수
           tot_ccld_amt: data.tot_ccld_amt, //금액
+          evlu_pfls_amt: data.evlu_pfls_amt || null,
+          evlu_pfls_rt: data.evlu_pfls_rt || null,
         });
       }
     }
