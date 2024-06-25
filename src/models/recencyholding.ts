@@ -3,28 +3,30 @@ import { Portfolio } from "./portfolio";
 import { Account } from "./account";
 import { User } from "./user";
 
-export interface CurrentHoldingAttributes {
-  holding_id?: number;
+export interface RecencyHoldingsAttributes {
+  // holding_id: number;
   portfolio_id: number;
-  account_id: number;
+  account_id?: number;
   uid?: number;
-  name: string;
+  name?: string;
   hldg_qty: string;
   pchs_amt: string;
   evlu_amt: string;
   evlu_pfls_amt: string;
   evlu_pfls_rt: string;
-  std_idst_clsf_cd_name: string;
-  closing_price: string;
+  std_idst_clsf_cd_name?: string;
+  closing_price?: number;
 }
 
 @Table({
-  tableName: "current_holding",
+  tableName: "recencyholdings",
   timestamps: true,
 })
-export class Current_holding extends Model<Current_holding, Current_holding> implements Current_holding {
-  @PrimaryKey
-  @Column({ type: DataType.BIGINT })
+export class RecencyHoldings
+  extends Model<RecencyHoldingsAttributes, RecencyHoldingsAttributes>
+  implements RecencyHoldingsAttributes
+{
+  @Column({ primaryKey: true, autoIncrement: true, type: DataType.BIGINT })
   holding_id!: number;
 
   @ForeignKey(() => Portfolio)
@@ -60,8 +62,8 @@ export class Current_holding extends Model<Current_holding, Current_holding> imp
   @Column({ type: DataType.STRING })
   std_idst_clsf_cd_name!: string; // 표준 분류 코드명
 
-  @Column({ type: DataType.STRING(255) })
-  closing_price!: string; // 종가
+  @Column({ type: DataType.BIGINT })
+  closing_price!: number; // 종가
 
   @BelongsTo(() => Portfolio)
   portfolio!: Portfolio;

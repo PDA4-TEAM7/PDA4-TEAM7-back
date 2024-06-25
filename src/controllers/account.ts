@@ -80,6 +80,8 @@ export const setAccount = async (req: Request, res: Response) => {
           trade_dt: setDateByOrd(data.ord_dt, data.ord_tmd), //"ord_dt": "20240618", ord_tmd:105619
           tot_ccld_qty: data.tot_ccld_qty, //주식수
           tot_ccld_amt: data.tot_ccld_amt, //금액
+          evlu_pfls_amt: data.evlu_pfls_amt || null,
+          evlu_pfls_rt: data.evlu_pfls_rt || null,
         });
       }
     }

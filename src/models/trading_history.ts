@@ -10,6 +10,8 @@ export interface trading_historyAttributes {
   trade_dt?: Date;
   tot_ccld_qty?: string;
   tot_ccld_amt?: string;
+  evlu_pfls_amt?: string;
+  evlu_pfls_rt?: string;
 }
 
 @Table({ tableName: "trading_history", timestamps: false })
@@ -42,6 +44,12 @@ export class Trading_history
 
   @Column({ allowNull: true, type: DataType.STRING(30) })
   tot_ccld_amt?: string;
+
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  evlu_pfls_amt?: string;
+
+  @Column({ allowNull: true, type: DataType.STRING(30) })
+  evlu_pfls_rt?: string;
 
   @BelongsTo(() => Account)
   account!: Account;
