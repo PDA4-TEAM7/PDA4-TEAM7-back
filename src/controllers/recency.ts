@@ -38,3 +38,13 @@ export const getStockInfoByAccountId = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+
+export const getInvestIdstTop5 = async (req: Request, res: Response) => {
+  const { uid } = (req as any).user;
+  try {
+    const idstTop5 = await recencyAPI.getInvestIdstTop5(uid);
+    res.status(200).json(idstTop5);
+  } catch (error) {
+    console.log(error);
+  }
+};

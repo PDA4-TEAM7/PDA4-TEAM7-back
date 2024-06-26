@@ -76,6 +76,7 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
             const stockHistory = await Stock_history.findOne({
               where: { stock_id: stockDetails.stock_id },
             });
+
             if (!stockHistory || !stockHistory.closing_price) {
               console.error(`Stock history not found for ID: ${stockDetails.stock_id}`);
               continue;

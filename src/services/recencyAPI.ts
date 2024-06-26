@@ -3,6 +3,8 @@ import { Sub_portfolio } from "../models/sub_portfolio";
 import { RecencyHistory, RecencyHistoryAttributes } from "../models/recencyhistory";
 import { Stock } from "../models/stock";
 import { Stock_in_account } from "../models/stock_in_account";
+import { RecencyHoldings, RecencyHoldingsAttributes } from "../models/recencyholding";
+import sequelize from "sequelize";
 
 class recencyAPI {
   static async getMySubPortfolioInfo(uid: string) {
@@ -11,7 +13,7 @@ class recencyAPI {
         attributes: ["portfolio_id"],
         where: {
           uid: uid,
-          can_sub: 1,
+          can_sub: true || 1,
         },
       });
       return portfolios;
@@ -24,17 +26,16 @@ class recencyAPI {
   static async getMySubRecencyTradingHistory(uid: string) {
     try {
       const portfolios = await this.getMySubPortfolioInfo(uid);
-      const portfolioIds = portfolios.map((p) => p.portfolio_id); // portfolio_id만 추출합니다.
-      // portfolioIds를 사용하여 해당하는 모든 RecencyHistory를 조회합니다.
+      const portfolioIds = portfolios.map((p) => p.portfolio_id);
       const recencyHistories: RecencyHistoryAttributes[] = await RecencyHistory.findAll({
         where: {
           portfolio_id: {
-            [Op.in]: portfolioIds as number[], // Op.in을 사용해 배열 안의 id들로 검색합니다.
+            [Op.in]: portfolioIds as number[],
           },
         },
       });
 
-      return recencyHistories; // 검색된 히스토리를 반환합니다.
+      return recencyHistories;
     } catch (error) {
       console.error("Error fetching trading histories:", error);
       throw error;
@@ -64,6 +65,34 @@ class recencyAPI {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  static async getInvestIdstTop5(uid: string) {
+    const portfolios = await this.getMySubPortfolioInfo(uid);
+    const portfolioIds = portfolios.map((p) => p.portfolio_id);
+    const attributes = Object.keys(RecencyHoldings.getAttributes());
+    // const recencyHoldings: RecencyHoldingsAttributes[] = await RecencyHoldings.findAll({
+    //   attributes: [...attributes, [sequelize.fn("COUNT", sequelize.col("*")), "total_count"]],
+    //   where: {
+    //     portfolio_id: {
+    //       [Op.in]: portfolioIds as number[],
+    //     },
+    //   },
+    //   group: ["std_idst_clsf_cd_name"],
+    //   order: [[sequelize.literal("total_count"), "DESC"]],
+    //   limit: 5,
+    // });
+    const recencyHoldingsData = await RecencyHoldings.findAll({
+      attributes: [
+        ["std_idst_clsf_cd_name", "group"],
+        [sequelize.literal(`COUNT(DISTINCT name)`), "value"], // 직접적인 SQL 문을 사용하여 고유 주식 수 계산
+      ],
+      group: ["std_idst_clsf_cd_name"],
+      order: [[sequelize.literal("value"), "DESC"]], // 고유 주식 수를 기준으로 내림차순 정렬
+      limit: 5,
+    });
+    console.log(recencyHoldingsData);
+    return recencyHoldingsData;
   }
 }
 
