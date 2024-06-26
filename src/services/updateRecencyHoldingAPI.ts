@@ -27,11 +27,11 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
 
   static async updateAllHoldings() {
     try {
+      await RecencyHoldings.destroy({
+        where: {},
+        truncate: true,
+      });
       const portfolios = await this.getAllPortfolioAccountInfo();
-      console.log("#########################################");
-      console.log("포트폴리오 정보 모두 조회");
-      console.log(portfolios);
-      console.log("#########################################");
 
       for (const portfolio of portfolios) {
         let account: accountAttributes | null = await Account.findOne({
@@ -48,10 +48,6 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
         if (!accessRes) throw Error("fail to get access Token. check key value");
 
         const accessToken = accessRes.access_token;
-        console.log("#########################################");
-        console.log("토큰 받아오기");
-        console.log(accessRes);
-        console.log("#########################################");
         const accessTokenValidDate = new Date(accessRes.access_token_token_expired);
 
         // 토큰 정보 업데이트
@@ -66,10 +62,6 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
             },
           }
         );
-
-        console.log("#########################################");
-        console.log("accout 정보 업데이트 ");
-        console.log("#########################################");
 
         const stockAccountApi = new StockAccountApi(account.app_key, account.app_secret, accessToken);
         if (account.account_number) {
@@ -88,6 +80,7 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
             const stockHistory = await Stock_history.findOne({
               where: { stock_id: stockDetails.stock_id },
             });
+
             if (!stockHistory || !stockHistory.closing_price) {
               console.error(`Stock history not found for ID: ${stockDetails.stock_id}`);
               continue;
@@ -115,6 +108,10 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
 
   static async updateAllHistory() {
     try {
+      await RecencyHistory.destroy({
+        where: {},
+        truncate: true,
+      });
       const portfolios = await this.getAllPortfolioAccountInfo();
 
       for (const portfolio of portfolios) {
