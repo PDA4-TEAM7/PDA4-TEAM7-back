@@ -70,23 +70,16 @@ class recencyAPI {
   static async getInvestIdstTop5(uid: string) {
     const portfolios = await this.getMySubPortfolioInfo(uid);
     const portfolioIds = portfolios.map((p) => p.portfolio_id);
-    const attributes = Object.keys(RecencyHoldings.getAttributes());
-    // const recencyHoldings: RecencyHoldingsAttributes[] = await RecencyHoldings.findAll({
-    //   attributes: [...attributes, [sequelize.fn("COUNT", sequelize.col("*")), "total_count"]],
-    //   where: {
-    //     portfolio_id: {
-    //       [Op.in]: portfolioIds as number[],
-    //     },
-    //   },
-    //   group: ["std_idst_clsf_cd_name"],
-    //   order: [[sequelize.literal("total_count"), "DESC"]],
-    //   limit: 5,
-    // });
     const recencyHoldingsData = await RecencyHoldings.findAll({
       attributes: [
         ["std_idst_clsf_cd_name", "group"],
         [sequelize.literal(`COUNT(DISTINCT name)`), "value"], // 직접적인 SQL 문을 사용하여 고유 주식 수 계산
       ],
+      where: {
+        portfolio_id: {
+          [Op.in]: portfolioIds as number[],
+        },
+      },
       group: ["std_idst_clsf_cd_name"],
       order: [[sequelize.literal("value"), "DESC"]], // 고유 주식 수를 기준으로 내림차순 정렬
       limit: 5,
