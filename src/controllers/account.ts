@@ -178,3 +178,8 @@ export const deleteAccount = async (req: Request, res: Response) => {
     return res.sendStatus(500); // 내부 서버 오류
   }
 };
+
+//계정 전부 찾기
+export const getAllAccounts = async () => {
+  return await Account.findAll();
+};
