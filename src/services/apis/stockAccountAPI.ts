@@ -204,8 +204,10 @@ export class StockAccountApi extends HantuBaseApi {
     let CTX_AREA_FK100 = ""; // 최초시 공란
     let CTX_AREA_NK100 = ""; // 최초시 공란
     const currentDate = new Date();
-    const INQR_STRT_DT = formatYYMMDD(currentDate); // 조회할 단일 날짜
-    const INQR_END_DT = INQR_STRT_DT; // 동일 날짜로 설정
+    const yesterday = new Date(currentDate);
+    yesterday.setDate(currentDate.getDate() - 1);
+    const INQR_STRT_DT = formatYYMMDD(yesterday); // 조회할 단일 날짜
+    const INQR_END_DT = formatYYMMDD(currentDate); // 동일 날짜로 설정
     const SLL_BUY_DVSN_CD = "00"; // 매수매도 구분 코드: 00전체
     const INQR_DVSN = "00"; // 조회구분: 00역순
     const INQR_DVSN_3 = "00"; // 00전체 01 현금

@@ -1,6 +1,8 @@
 import { Op } from "sequelize"; // Sequelize의 Op를 사용해야 합니다.
 import { Sub_portfolio } from "../models/sub_portfolio";
 import { RecencyHistory, RecencyHistoryAttributes } from "../models/recencyhistory";
+import { Stock } from "../models/stock";
+import { Stock_in_account } from "../models/stock_in_account";
 
 class recencyAPI {
   static async getMySubPortfolioInfo(uid: string) {
@@ -41,13 +43,24 @@ class recencyAPI {
 
   static async getStockInfoByAccountId(account_id: number, name: string) {
     try {
+      const stockId = await Stock.findOne({
+        where: {
+          name: name,
+        },
+      });
+      const stockInAccout = await Stock_in_account.findOne({
+        where: {
+          stock_id: stockId?.stock_id,
+          account_id: account_id,
+        },
+      });
       const stockInfo = await RecencyHistory.findOne({
         where: {
           account_id: account_id,
           name: name,
         },
       });
-      return stockInfo;
+      return stockInAccout;
     } catch (error) {
       console.log(error);
     }
