@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
+import { Account } from "./models/account";
 import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
 import { StockAccountApi } from "./services/apis/stockAccountAPI";
@@ -7,7 +8,12 @@ import router from "./routes/index";
 import cookieParser from "cookie-parser";
 import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
 import { fetchKospiData, fetchKosdaqData } from "./scheduler/updateStockData";
+import { UpdateRecencyHoldingAPI } from "./services/updateRecencyHoldingAPI";
 import cron from "node-cron";
+import { Trading_history } from "./models/trading_history";
+
+import { getAllAccounts } from "./controllers/account";
+import { updateStockInAccount, updateTradingHistory } from "./services/newUpdateAPI";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -50,6 +56,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send("Something broke!");
 });
 
+// 모든 계좌에 대해 크론잡 실행 함수
+const executeForAllAccounts = async (job: (account: Account) => Promise<void>) => {
+  const accounts = await getAllAccounts();
+  for (const account of accounts) {
+    await job(account); // 각 계좌에 대해 작업 수행
+  }
+};
+
 // 서버 시작 함수
 const startServer = async () => {
   app.listen(config.port, async () => {
@@ -75,6 +89,61 @@ const startServer = async () => {
         async () => {
           console.log("Running fetchKosdaqData at 3:35 PM KST");
           await fetchKosdaqData();
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+
+      cron.schedule(
+        //updateRecency Info
+        "40 15 * * 1-5",
+        async () => {
+          console.log("Running updateRecencyData at 3:40 PM KST");
+          await UpdateRecencyHoldingAPI.updateAllHoldings();
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+      cron.schedule(
+        //updateRecency Info
+        "45 15 * * 1-5",
+        async () => {
+          console.log("Running updateRecencyData at 3:45 PM KST");
+          await UpdateRecencyHoldingAPI.updateAllHistory();
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+
+      //매일 오후 3시 50분에 updateStockInAccount
+      cron.schedule(
+        "50 15 * * 1-5",
+        async () => {
+          console.log("Running updateStockInAccount at 3:50 PM KST");
+          await executeForAllAccounts(updateStockInAccount);
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+
+      //매일 오후 3시 55분에 updateTradingHistory
+      cron.schedule(
+        "55 15 * * 1-5",
+        async () => {
+          console.log("Running updateTradingHistory at 3:55 PM KST");
+          await Trading_history.destroy({
+            where: {},
+            truncate: true,
+          });
+          await executeForAllAccounts(updateTradingHistory);
         },
         {
           scheduled: true,
