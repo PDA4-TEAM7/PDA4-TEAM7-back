@@ -27,6 +27,10 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
 
   static async updateAllHoldings() {
     try {
+      await RecencyHoldings.destroy({
+        where: {},
+        truncate: true,
+      });
       const portfolios = await this.getAllPortfolioAccountInfo();
 
       for (const portfolio of portfolios) {
@@ -104,6 +108,10 @@ export class UpdateRecencyHoldingAPI extends HantuBaseApi {
 
   static async updateAllHistory() {
     try {
+      await RecencyHistory.destroy({
+        where: {},
+        truncate: true,
+      });
       const portfolios = await this.getAllPortfolioAccountInfo();
 
       for (const portfolio of portfolios) {
