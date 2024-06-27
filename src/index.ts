@@ -3,7 +3,6 @@ import cors from "cors";
 import { Account } from "./models/account";
 import config from "./config/index.config";
 import { initializeDatabase } from "./models/index";
-import { StockAccountApi } from "./services/apis/stockAccountAPI";
 import router from "./routes/index";
 import cookieParser from "cookie-parser";
 import decodeTokenMiddleware from "./middleware/decodeTokenMiddleware";
@@ -16,6 +15,7 @@ import { getAllAccounts } from "./controllers/account";
 import { updateStockInAccount, updateTradingHistory } from "./services/newUpdateAPI";
 
 import * as dotenv from "dotenv";
+import { Stock_in_account } from "./models/stock_in_account";
 dotenv.config();
 const app = express();
 // 기본 미들웨어
@@ -36,19 +36,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api", router());
-
-//DUMMY : 한투 테스트용 api 나중에 지울예정
-app.get("/me", async (req: Request, res: Response) => {
-  try {
-    const hantuService = new StockAccountApi();
-    const data = await hantuService.inquireBalance("");
-    console.log(data);
-    res.send(data);
-  } catch (err) {
-    console.log(err);
-    res.send(`fail : ${err}`);
-  }
-});
 
 // 에러 핸들링 미들웨어
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -96,9 +83,42 @@ const startServer = async () => {
         }
       );
 
+      //매일 오후 3시 40분에 updateStockInAccount
       cron.schedule(
-        //updateRecency Info
         "40 15 * * 1-5",
+        async () => {
+          console.log("Running updateStockInAccount at 3:50 PM KST");
+          await Stock_in_account.destroy({
+            where: {},
+            truncate: true,
+          });
+          await executeForAllAccounts(updateStockInAccount);
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+
+      //매일 오후 3시 45분에 updateTradingHistory
+      cron.schedule(
+        "45 15 * * 1-5",
+        async () => {
+          console.log("Running updateTradingHistory at 3:55 PM KST");
+          await Trading_history.destroy({
+            where: {},
+            truncate: true,
+          });
+          await executeForAllAccounts(updateTradingHistory);
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Seoul",
+        }
+      );
+      cron.schedule(
+        //updateRecency Info 3시50분
+        "50 15 * * 1-5",
         async () => {
           console.log("Running updateRecencyData at 3:40 PM KST");
           await UpdateRecencyHoldingAPI.updateAllHoldings();
@@ -109,41 +129,11 @@ const startServer = async () => {
         }
       );
       cron.schedule(
-        //updateRecency Info
-        "45 15 * * 1-5",
+        //updateRecency Info 3시55분
+        "55 15 * * 1-5",
         async () => {
           console.log("Running updateRecencyData at 3:45 PM KST");
           await UpdateRecencyHoldingAPI.updateAllHistory();
-        },
-        {
-          scheduled: true,
-          timezone: "Asia/Seoul",
-        }
-      );
-
-      //매일 오후 3시 50분에 updateStockInAccount
-      cron.schedule(
-        "50 15 * * 1-5",
-        async () => {
-          console.log("Running updateStockInAccount at 3:50 PM KST");
-          await executeForAllAccounts(updateStockInAccount);
-        },
-        {
-          scheduled: true,
-          timezone: "Asia/Seoul",
-        }
-      );
-
-      //매일 오후 3시 55분에 updateTradingHistory
-      cron.schedule(
-        "55 15 * * 1-5",
-        async () => {
-          console.log("Running updateTradingHistory at 3:55 PM KST");
-          await Trading_history.destroy({
-            where: {},
-            truncate: true,
-          });
-          await executeForAllAccounts(updateTradingHistory);
         },
         {
           scheduled: true,
