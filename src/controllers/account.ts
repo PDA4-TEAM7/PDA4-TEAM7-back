@@ -163,8 +163,10 @@ export const deleteAccount = async (req: Request, res: Response) => {
 
     // 포트폴리오가 존재하지 않거나 published가 0인 경우 삭제 가능
     if (!portfolio || portfolio.published === false) {
-      const deleted = await Account.destroy({ where: { account_id: accountId } });
-      if (deleted) {
+      const deleted1 = await Stock_in_account.destroy({ where: { account_id: accountId } });
+      const deleted2 = await Account.destroy({ where: { account_id: accountId } });
+
+      if (deleted1 && deleted2) {
         return res.status(200).json({ message: "성공적으로 계좌가 삭제되었습니다." });
       } else {
         return res.status(404).json({ message: "삭제할 계좌를 찾을 수 없습니다." });
