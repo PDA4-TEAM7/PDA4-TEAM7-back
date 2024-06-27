@@ -36,7 +36,6 @@ export class RecencyHistory
 
   @ForeignKey(() => Portfolio)
   @Column({ type: DataType.BIGINT })
-  @Index({ name: "FK_portfolio_TO_recent_history_1", using: "BTREE", order: "ASC", unique: false })
   portfolio_id!: number;
 
   @ForeignKey(() => Account)
